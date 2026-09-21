@@ -119,13 +119,55 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+function SiteHeader() {
+  const links = [
+    { to: "/", label: "Home" },
+    { to: "/note", label: "A Note for Fatima" },
+    { to: "/memories", label: "Share Photos" },
+  ] as const;
+
+  return (
+    <header className="sticky top-0 z-40 border-b border-gold/25 bg-background/85 backdrop-blur">
+      <nav className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-5 py-4">
+        <Link to="/" className="font-script text-2xl text-foreground">
+          F &amp; A
+        </Link>
+        <div className="flex flex-wrap gap-5">
+          {links.map((l) => (
+            <Link
+              key={l.to}
+              to={l.to}
+              className="eyebrow transition-colors hover:text-foreground"
+              activeProps={{ className: "eyebrow text-foreground" }}
+              activeOptions={{ exact: l.to === "/" }}
+            >
+              {l.label}
+            </Link>
+          ))}
+        </div>
+      </nav>
+    </header>
+  );
+}
+
+function SiteFooter() {
+  return (
+    <footer className="border-t border-gold/25 py-10 text-center">
+      <p className="font-script text-3xl text-foreground">Fatima &amp; Ahmad</p>
+      <p className="eyebrow mt-3">#TheAFUnion2026</p>
+    </footer>
+  );
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
     <QueryClientProvider client={queryClient}>
+      <SiteHeader />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
+      <SiteFooter />
     </QueryClientProvider>
   );
 }
