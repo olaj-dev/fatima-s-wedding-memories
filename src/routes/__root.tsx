@@ -77,19 +77,24 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Lovable App" },
-      { name: "description", content: "Lovable Generated Project" },
-      { name: "author", content: "Lovable" },
-      { property: "og:title", content: "Lovable App" },
-      { property: "og:description", content: "Lovable Generated Project" },
+      { title: "Fatima & Ahmad — Our Nikkah" },
+      {
+        name: "description",
+        content: "Join us as Fatima and Ahmad begin their journey together, 6th November.",
+      },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
-      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
       {
         rel: "stylesheet",
         href: appCss,
+      },
+      { rel: "preconnect", href: "https://fonts.googleapis.com" },
+      { rel: "preconnect", href: "https://fonts.gstatic.com", crossOrigin: "anonymous" },
+      {
+        rel: "stylesheet",
+        href: "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Jost:wght@300;400;500&family=Amiri:wght@400;700&family=Great+Vibes&display=swap",
       },
       { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
     ],
@@ -114,13 +119,55 @@ function RootShell({ children }: { children: ReactNode }) {
   );
 }
 
+function SiteHeader() {
+  const links = [
+    { to: "/", label: "Home" },
+    { to: "/note", label: "A Note for Fatima" },
+    { to: "/memories", label: "Share Photos" },
+  ] as const;
+
+  return (
+    <header className="sticky top-0 z-40 border-b border-gold/25 bg-background/85 backdrop-blur">
+      <nav className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-5 py-4">
+        <Link to="/" className="font-script text-2xl text-foreground">
+          F &amp; A
+        </Link>
+        <div className="flex flex-wrap gap-5">
+          {links.map((l) => (
+            <Link
+              key={l.to}
+              to={l.to}
+              className="eyebrow transition-colors hover:text-foreground"
+              activeProps={{ className: "eyebrow text-foreground" }}
+              activeOptions={{ exact: l.to === "/" }}
+            >
+              {l.label}
+            </Link>
+          ))}
+        </div>
+      </nav>
+    </header>
+  );
+}
+
+function SiteFooter() {
+  return (
+    <footer className="border-t border-gold/25 py-10 text-center">
+      <p className="font-script text-3xl text-foreground">Fatima &amp; Ahmad</p>
+      <p className="eyebrow mt-3">#TheAFUnion2026</p>
+    </footer>
+  );
+}
+
 function RootComponent() {
   const { queryClient } = Route.useRouteContext();
 
   return (
     <QueryClientProvider client={queryClient}>
+      <SiteHeader />
       {/* Required: nested routes render here. Removing <Outlet /> breaks all child routes. */}
       <Outlet />
+      <SiteFooter />
     </QueryClientProvider>
   );
 }
