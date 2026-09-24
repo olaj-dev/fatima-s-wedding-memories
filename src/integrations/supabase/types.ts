@@ -38,6 +38,33 @@ export type Database = {
         }
         Relationships: []
       }
+      rsvps: {
+        Row: {
+          attending: boolean
+          created_at: string
+          email: string | null
+          full_name: string
+          id: string
+          note: string | null
+        }
+        Insert: {
+          attending: boolean
+          created_at?: string
+          email?: string | null
+          full_name: string
+          id?: string
+          note?: string | null
+        }
+        Update: {
+          attending?: boolean
+          created_at?: string
+          email?: string | null
+          full_name?: string
+          id?: string
+          note?: string | null
+        }
+        Relationships: []
+      }
     }
     Views: {
       [_ in never]: never

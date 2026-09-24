@@ -8,6 +8,13 @@
       "when": 1789980979569,
       "tag": "0000_create_memories",
       "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1790262410196,
+      "tag": "0001_create_rsvps",
+      "breakpoints": true
     }
   ]
 }
