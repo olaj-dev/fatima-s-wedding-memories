@@ -3,7 +3,7 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Countdown } from "@/components/Countdown";
 import { Carousel, type Slide } from "@/components/Carousel";
-import { wedding, ayah, programme, contacts, gifts } from "@/lib/wedding";
+import { wedding, ayah, programme, contacts, gifts, rsvp } from "@/lib/wedding";
 import hero from "@/assets/hero.jpg";
 import intro1 from "@/assets/intro-1.jpg";
 import intro2 from "@/assets/intro-2.jpg";
