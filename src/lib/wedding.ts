@@ -1,21 +1,24 @@
 // ---------------------------------------------------------------------------
-// PLACEHOLDER CONTENT — replace the values below with the real details.
+// PLACEHOLDER CONTENT — items still awaiting real details are marked TODO.
 // ---------------------------------------------------------------------------
 
 export const wedding = {
   bride: "Fatima",
-  groom: "Ahmad",
-  hashtag: "#TheAFUnion2026",
-  // Nikkah day
-  date: "2026-11-06T11:00:00+01:00",
+  brideFull: "Fatima Ahmad",
+  groom: "Masoud",
+  groomFull: "Masoud Tijjani",
+  // TODO: hashtag not concluded yet
+  // Nikkah day — TODO: confirm the year if it is not 2026
+  date: "2026-11-06T09:00:00+01:00",
   dateLabel: "Friday, 6th November 2026",
-  timeLabel: "11:00 AM prompt",
-  venue: "Al-Noor Central Mosque Hall",
-  address: "12 Awolowo Road, Ikoyi, Lagos, Nigeria",
-  mapUrl: "https://maps.google.com/?q=Ikoyi+Lagos",
-  dressCode: "Emerald green & gold — modest attire please",
+  timeLabel: "9:00 AM prompt · reception follows immediately",
+  venue: "Digital Bridge Institute (Nitel)",
+  // TODO: confirm full address / hall name
+  address: "Kano, Nigeria",
+  mapUrl: "https://maps.google.com/?q=Digital+Bridge+Institute+Kano",
+  dressCode: "Emerald green & champagne gold — modest attire please",
   story:
-    "Two families, one prayer answered. What began with a quiet introduction between loved ones has grown into a union built on faith, patience and mercy. We invite you to stand with us as Fatima and Ahmad begin this beautiful journey.",
+    "Two families, one prayer answered. What began with a quiet introduction between loved ones has grown into a union built on faith, patience and mercy. We invite you to stand with us as Fatima and Masoud begin this beautiful journey.",
 } as const;
 
 export const ayah = {
@@ -27,39 +30,27 @@ export const ayah = {
 } as const;
 
 export const programme = [
-  { time: "9:30 AM", title: "Guests arrive & seating", note: "Light refreshments served" },
-  { time: "10:30 AM", title: "Qur'an recitation", note: "Opening supplication" },
-  { time: "11:00 AM", title: "Nikkah ceremony", note: "Solemnisation & exchange of vows" },
-  { time: "12:00 PM", title: "Sermon & prayers", note: "Words from the Imam" },
-  { time: "12:45 PM", title: "Family photographs", note: "Both families & friends" },
-  { time: "1:30 PM", title: "Walimah reception", note: "Lunch, music & toasts" },
-  { time: "4:00 PM", title: "Send-forth", note: "Departure of the couple" },
+  { time: "8:30 AM", title: "Guests arrive & seating", note: "Light refreshments served" },
+  { time: "9:00 AM", title: "Nikkah ceremony", note: "Solemnisation & exchange of vows" },
+  { time: "Immediately after", title: "Reception", note: "Lunch, music & toasts" },
+  { time: "12:00 PM", title: "Family photographs", note: "Both families & friends" },
+  { time: "2:00 PM", title: "Send-forth", note: "Departure of the couple" },
 ];
 
 export const contacts = [
-  { name: "Aisha Bello", role: "Bride's family", phone: "+2348012345678" },
-  { name: "Yusuf Ibrahim", role: "Groom's family", phone: "+2348023456789" },
-  { name: "Abioye Olajide", role: "Guest coordination", phone: "+2348034567890" },
+  { name: "Ayuba", role: "Bride's brother", phone: "07060636825" },
+  { name: "Groom's brother", role: "Groom's family", phone: "07032455376" },
 ];
 
 export const gifts = {
   intro:
-    "Your presence and prayers are the greatest gift. For those who wish to give a little extra, here are a few ways.",
+    "Your presence and prayers are the greatest gift. For those who wish to give a little extra:",
   options: [
     {
       label: "Bank transfer",
-      detail: "Fatima & Ahmad — 0123456789, Example Bank",
+      // TODO: replace with the real account details
+      detail: "Fatima & Masoud — 0123456789, Example Bank",
       hint: "Kindly use your name as the narration.",
-    },
-    {
-      label: "Gift registry",
-      detail: "Items for the new home",
-      hint: "Registry link coming soon.",
-    },
-    {
-      label: "Sadaqah in our name",
-      detail: "A donation to a cause close to our hearts",
-      hint: "Tell us about it — it would mean the world.",
     },
   ],
 };

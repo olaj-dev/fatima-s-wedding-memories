@@ -192,10 +192,10 @@ function Home() {
       {/* Gifts */}
       <Section eyebrow="If you wish" title="Gifts & blessings">
         <p className="mx-auto max-w-2xl text-center text-muted-foreground">{gifts.intro}</p>
-        <div className="mt-10 grid gap-6 sm:grid-cols-3">
+        <div className="mx-auto mt-10 max-w-md">
           {gifts.options.map((g) => (
-            <div key={g.label} className="rounded-sm border border-gold/30 bg-card p-6">
-              <Gift className="h-5 w-5 text-gold" />
+            <div key={g.label} className="rounded-sm border border-gold/30 bg-card p-6 text-center">
+              <Gift className="mx-auto h-5 w-5 text-gold" />
               <p className="mt-4 font-display text-xl">{g.label}</p>
               <p className="mt-2 text-sm text-foreground">{g.detail}</p>
               <p className="mt-2 text-xs text-muted-foreground">{g.hint}</p>
@@ -210,7 +210,7 @@ function Home() {
           <p className="eyebrow text-gold-soft">Need anything?</p>
           <h2 className="mt-3 text-4xl text-primary-foreground sm:text-5xl">Reach out to us</h2>
           <span className="gold-rule mx-auto mt-6 max-w-xs" />
-          <div className="mt-10 grid gap-6 sm:grid-cols-3">
+          <div className="mt-10 mx-auto grid max-w-2xl gap-6 sm:grid-cols-2">
             {contacts.map((c) => (
               <a
                 key={c.phone}
