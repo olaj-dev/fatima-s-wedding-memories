@@ -44,16 +44,20 @@ export const contacts = [
 
 export const gifts = {
   intro:
-    "Your presence and prayers are the greatest gift. For those who wish to give a little extra:",
-  options: [
-    {
-      label: "Bank transfer",
-      // TODO: replace with the real account details
-      detail: "Fatima & Masoud — 0123456789, Example Bank",
-      hint: "Kindly use your name as the narration.",
-    },
-  ],
+    "Your presence and prayers mean the world to us. Should you wish to honour us with something more, a contribution towards our new life together would be received with heartfelt gratitude.",
+  bank: {
+    bank: "OPay",
+    accountName: "Fatima Ahmed",
+    accountNumber: "9020314747",
+    hint: "Kindly use your name as the narration.",
+  },
 };
+
+export const rsvp = {
+  intro: "We would be honoured to have you with us on our special day.",
+  successAccepted: "We can't wait to celebrate with you, in shaa Allah.",
+  successDeclined: "You'll be dearly missed — thank you for letting us know.",
+} as const;
 
 export const noteToFatima = {
   greeting: "My dearest Fatima,",

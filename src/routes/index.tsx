@@ -1,4 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
+import { useState } from "react";
+import { supabase } from "@/integrations/supabase/client";
 import { Countdown } from "@/components/Countdown";
 import { Carousel, type Slide } from "@/components/Carousel";
 import { wedding, ayah, programme, contacts, gifts } from "@/lib/wedding";
@@ -7,7 +9,7 @@ import intro1 from "@/assets/intro-1.jpg";
 import intro2 from "@/assets/intro-2.jpg";
 import intro3 from "@/assets/intro-3.jpg";
 import intro4 from "@/assets/intro-4.jpg";
-import { MapPin, Phone, Clock, Gift, Camera, Heart } from "lucide-react";
+import { MapPin, Phone, Clock, Camera, Heart, Copy, Check } from "lucide-react";
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -53,6 +55,201 @@ function Section({
         <span className="gold-rule mx-auto mt-6 max-w-xs" />
       </div>
       {children}
+    </section>
+  );
+}
+
+function RsvpSection() {
+  const [name, setName] = useState("");
+  const [choice, setChoice] = useState<boolean | null>(null);
+  const [email, setEmail] = useState("");
+  const [note, setNote] = useState("");
+  const [sending, setSending] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [done, setDone] = useState(false);
+
+  async function handleSubmit(e: React.FormEvent) {
+    e.preventDefault();
+    if (!name.trim() || choice === null) {
+      setError("Please tell us your name and whether you can make it.");
+      return;
+    }
+    setSending(true);
+    setError(null);
+    const { error: insertError } = await supabase.from("rsvps").insert({
+      full_name: name.trim().slice(0, 100),
+      attending: choice,
+      email: email.trim().slice(0, 120) || null,
+      note: note.trim().slice(0, 500) || null,
+    });
+    setSending(false);
+    if (insertError) {
+      setError("Something went wrong — please try again.");
+      return;
+    }
+    setDone(true);
+  }
+
+  const inputClass =
+    "mt-2 w-full rounded-sm border border-primary-foreground/30 bg-primary-foreground/10 px-3 py-2.5 text-sm text-primary-foreground placeholder:text-primary-foreground/40 outline-none focus:border-gold";
+
+  return (
+    <section id="rsvp" className="bg-emerald-gradient px-5 py-20">
+      <div className="mx-auto max-w-2xl">
+        <div className="text-center">
+          <p className="eyebrow text-gold-soft">R.S.V.P</p>
+          <h2 className="mt-3 text-4xl text-primary-foreground sm:text-5xl">
+            Will you be joining us?
+          </h2>
+          <span className="gold-rule mx-auto mt-6 max-w-xs" />
+          <p className="mt-6 text-primary-foreground/85">{rsvp.intro}</p>
+        </div>
+
+        {done ? (
+          <div className="animate-rise mt-10 rounded-sm border border-gold/40 bg-primary/40 p-10 text-center">
+            <Heart className="mx-auto h-6 w-6 text-gold" />
+            <p className="mt-4 font-display text-2xl text-primary-foreground">
+              Thank you{name.trim() ? `, ${name.trim().split(" ")[0]}` : ""}!
+            </p>
+            <p className="mt-2 text-sm text-primary-foreground/80">
+              {choice ? rsvp.successAccepted : rsvp.successDeclined}
+            </p>
+          </div>
+        ) : (
+          <form
+            onSubmit={handleSubmit}
+            className="mt-10 rounded-sm border border-primary-foreground/25 bg-primary/40 p-6 sm:p-10"
+          >
+            <label className="block">
+              <span className="eyebrow text-gold-soft">Your name</span>
+              <input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                maxLength={100}
+                placeholder="Full name"
+                className={inputClass}
+              />
+            </label>
+
+            <span className="eyebrow mt-6 block text-gold-soft">Will you attend?</span>
+            <div className="mt-3 grid gap-3 sm:grid-cols-2">
+              <button
+                type="button"
+                onClick={() => setChoice(true)}
+                className={`rounded-full border px-4 py-2.5 text-sm transition-colors ${
+                  choice === true
+                    ? "border-gold bg-gold/20 text-primary-foreground"
+                    : "border-primary-foreground/30 text-primary-foreground/80 hover:border-gold/60"
+                }`}
+              >
+                Joyfully accept
+              </button>
+              <button
+                type="button"
+                onClick={() => setChoice(false)}
+                className={`rounded-full border px-4 py-2.5 text-sm transition-colors ${
+                  choice === false
+                    ? "border-gold bg-gold/20 text-primary-foreground"
+                    : "border-primary-foreground/30 text-primary-foreground/80 hover:border-gold/60"
+                }`}
+              >
+                Regrettably decline
+              </button>
+            </div>
+
+            <label className="mt-6 block">
+              <span className="eyebrow text-gold-soft">Email (optional)</span>
+              <input
+                type="email"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                maxLength={120}
+                placeholder="you@example.com"
+                className={inputClass}
+              />
+            </label>
+
+            <label className="mt-6 block">
+              <span className="eyebrow text-gold-soft">A note for the couple (optional)</span>
+              <textarea
+                value={note}
+                onChange={(e) => setNote(e.target.value)}
+                maxLength={500}
+                rows={4}
+                placeholder="Share your wishes…"
+                className={`${inputClass} resize-none`}
+              />
+            </label>
+
+            <button
+              type="submit"
+              disabled={sending}
+              className="mt-8 inline-flex w-full items-center justify-center rounded-full border border-gold px-6 py-3 text-sm tracking-widest text-gold uppercase transition-colors hover:bg-gold hover:text-accent-foreground disabled:opacity-60"
+            >
+              {sending ? "Sending…" : "Send RSVP"}
+            </button>
+            {error && (
+              <p className="mt-4 text-center text-sm text-destructive-foreground">{error}</p>
+            )}
+          </form>
+        )}
+      </div>
+    </section>
+  );
+}
+
+function GiftsSection() {
+  const [copied, setCopied] = useState(false);
+
+  async function copyAccount() {
+    try {
+      await navigator.clipboard.writeText(gifts.bank.accountNumber);
+    } catch {
+      const el = document.createElement("textarea");
+      el.value = gifts.bank.accountNumber;
+      document.body.appendChild(el);
+      el.select();
+      document.execCommand("copy");
+      document.body.removeChild(el);
+    }
+    setCopied(true);
+    setTimeout(() => setCopied(false), 2000);
+  }
+
+  return (
+    <section id="gifts" className="bg-emerald-gradient px-5 py-20 text-center">
+      <p className="eyebrow text-gold-soft">Gifts</p>
+      <h2 className="mt-3 font-display text-4xl italic text-gold-gradient sm:text-5xl">
+        Your presence is our gift
+      </h2>
+      <p className="mx-auto mt-6 max-w-md text-sm leading-relaxed text-primary-foreground/80">
+        {gifts.intro}
+      </p>
+      <div className="mx-auto mt-10 max-w-md rounded-sm border border-gold/40 bg-primary/40 p-6 text-left shadow-elegant sm:p-8">
+        <p className="eyebrow text-gold-soft">Bank</p>
+        <p className="mt-2 font-display text-xl text-primary-foreground">{gifts.bank.bank}</p>
+
+        <p className="eyebrow mt-6 text-gold-soft">Account name</p>
+        <p className="mt-2 font-display text-xl text-primary-foreground">
+          {gifts.bank.accountName}
+        </p>
+
+        <p className="eyebrow mt-6 text-gold-soft">Account number</p>
+        <div className="mt-2 flex items-center justify-between gap-4">
+          <span className="font-display text-3xl tracking-[0.2em] text-gold sm:text-4xl">
+            {gifts.bank.accountNumber}
+          </span>
+          <button
+            onClick={() => void copyAccount()}
+            className="inline-flex shrink-0 items-center gap-2 rounded-full border border-gold/60 px-4 py-2 text-xs tracking-widest text-gold uppercase transition-colors hover:bg-gold/15"
+          >
+            {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+            {copied ? "Copied" : "Copy"}
+          </button>
+        </div>
+
+        <p className="mt-6 text-xs text-primary-foreground/70">{gifts.bank.hint}</p>
+      </div>
     </section>
   );
 }
@@ -189,20 +386,11 @@ function Home() {
         </div>
       </section>
 
+      {/* RSVP */}
+      <RsvpSection />
+
       {/* Gifts */}
-      <Section eyebrow="If you wish" title="Gifts & blessings">
-        <p className="mx-auto max-w-2xl text-center text-muted-foreground">{gifts.intro}</p>
-        <div className="mx-auto mt-10 max-w-md">
-          {gifts.options.map((g) => (
-            <div key={g.label} className="rounded-sm border border-gold/30 bg-card p-6 text-center">
-              <Gift className="mx-auto h-5 w-5 text-gold" />
-              <p className="mt-4 font-display text-xl">{g.label}</p>
-              <p className="mt-2 text-sm text-foreground">{g.detail}</p>
-              <p className="mt-2 text-xs text-muted-foreground">{g.hint}</p>
-            </div>
-          ))}
-        </div>
-      </Section>
+      <GiftsSection />
 
       {/* Contacts */}
       <section className="bg-emerald-gradient py-20">
