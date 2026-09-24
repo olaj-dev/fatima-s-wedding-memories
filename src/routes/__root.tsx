@@ -11,6 +11,7 @@ import { useEffect, type ReactNode } from "react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
+import { wedding } from "@/lib/wedding";
 
 function NotFoundComponent() {
   return (
@@ -77,10 +78,10 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "Fatima & Ahmad — Our Nikkah" },
+      { title: `${wedding.bride} & ${wedding.groom} — Our Nikkah` },
       {
         name: "description",
-        content: "Join us as Fatima and Ahmad begin their journey together, 6th November.",
+        content: `Join us as ${wedding.bride} and ${wedding.groom} begin their journey together, ${wedding.dateLabel}, at ${wedding.venue}, Kano.`,
       },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
@@ -130,7 +131,7 @@ function SiteHeader() {
     <header className="sticky top-0 z-40 border-b border-gold/25 bg-background/85 backdrop-blur">
       <nav className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-5 py-4">
         <Link to="/" className="font-script text-2xl text-foreground">
-          F &amp; A
+          {wedding.bride[0]} &amp; {wedding.groom[0]}
         </Link>
         <div className="flex flex-wrap gap-5">
           {links.map((l) => (
@@ -153,8 +154,10 @@ function SiteHeader() {
 function SiteFooter() {
   return (
     <footer className="border-t border-gold/25 py-10 text-center">
-      <p className="font-script text-3xl text-foreground">Fatima &amp; Ahmad</p>
-      <p className="eyebrow mt-3">#TheAFUnion2026</p>
+      <p className="font-script text-3xl text-foreground">
+        {wedding.bride} &amp; {wedding.groom}
+      </p>
+      <p className="eyebrow mt-3">{wedding.dateLabel}</p>
     </footer>
   );
 }
