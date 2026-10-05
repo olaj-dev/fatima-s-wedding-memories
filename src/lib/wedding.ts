@@ -8,9 +8,9 @@ export const wedding = {
   groom: "Masoud",
   groomFull: "Masoud Tijjani",
   // TODO: hashtag not concluded yet
-  // Nikkah day — TODO: confirm the year if it is not 2026
-  date: "2026-11-06T09:00:00+01:00",
-  dateLabel: "Friday, 6th November 2026",
+  // Nikkah day
+  date: "2026-11-07T09:00:00+01:00",
+  dateLabel: "Saturday, 7th November 2026",
   timeLabel: "9:00 AM prompt · reception follows immediately",
   venue: "Digital Bridge Institute (Nitel)",
   // TODO: confirm full address / hall name
