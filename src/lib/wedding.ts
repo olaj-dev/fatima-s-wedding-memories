@@ -38,9 +38,25 @@ export const programme = [
 ];
 
 export const contacts = [
-  { name: "Bride", role: "Bride's brother", phone: "07060636825" },
-  { name: "Groom", role: "Groom's family", phone: "07032455376" },
+  { name: "Bride", phone: "07060636825" },
+  { name: "Groom", phone: "07032455376" },
 ];
+
+const NG_DIAL_CODE = "234";
+
+/** Local number → international digits, e.g. 07060636825 → 2347060636825. */
+export function dialDigits(phone: string) {
+  const digits = phone.replace(/\D/g, "");
+  return digits.startsWith("0") ? NG_DIAL_CODE + digits.slice(1) : digits;
+}
+
+export function telHref(phone: string) {
+  return `tel:+${dialDigits(phone)}`;
+}
+
+export function whatsappHref(phone: string) {
+  return `https://wa.me/${dialDigits(phone)}`;
+}
 
 export const gifts = {
   intro:
