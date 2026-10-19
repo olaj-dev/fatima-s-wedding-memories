@@ -8,7 +8,8 @@ import {
   Scripts,
   type ErrorComponentProps,
 } from "@tanstack/react-router";
-import { useEffect, type ReactNode } from "react";
+import { useEffect, useState, type ReactNode } from "react";
+import { Heart, Menu, X } from "lucide-react";
 
 import appCss from "../styles.css?url";
 import { reportLovableError } from "../lib/lovable-error-reporting";
@@ -122,19 +123,27 @@ function RootShell({ children }: { children: ReactNode }) {
 }
 
 function SiteHeader() {
+  const [menuOpen, setMenuOpen] = useState(false);
   const links = [
     { to: "/", label: "Home" },
     { to: "/note", label: "A Note for Fatima" },
     { to: "/memories", label: "Share Photos" },
+    { to: "/quiz", label: "How Well Do You Know Her?" },
   ] as const;
 
   return (
     <header className="sticky top-0 z-40 border-b border-gold/25 bg-background/85 backdrop-blur">
-      <nav className="mx-auto flex max-w-5xl flex-wrap items-center justify-between gap-3 px-5 py-4">
-        <Link to="/" className="font-script text-2xl text-foreground">
+      <nav className="mx-auto flex max-w-5xl items-center justify-between gap-3 px-5 py-4">
+        <Link
+          to="/"
+          className="font-script text-2xl text-foreground"
+          onClick={() => setMenuOpen(false)}
+        >
           {wedding.bride[0]} &amp; {wedding.groom[0]}
         </Link>
-        <div className="flex flex-wrap gap-5">
+
+        {/* Desktop links */}
+        <div className="hidden flex-wrap gap-5 md:flex">
           {links.map((l) => (
             <Link
               key={l.to}
@@ -147,7 +156,37 @@ function SiteHeader() {
             </Link>
           ))}
         </div>
+
+        {/* Mobile hamburger */}
+        <button
+          type="button"
+          aria-label={menuOpen ? "Close menu" : "Open menu"}
+          aria-expanded={menuOpen}
+          onClick={() => setMenuOpen((v) => !v)}
+          className="inline-flex h-10 w-10 items-center justify-center rounded-sm border border-gold/40 text-foreground transition-colors hover:bg-accent/20 md:hidden"
+        >
+          {menuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+        </button>
       </nav>
+
+      {menuOpen && (
+        <div className="border-t border-gold/25 bg-background/95 px-5 py-4 backdrop-blur md:hidden">
+          <div className="flex flex-col gap-4">
+            {links.map((l) => (
+              <Link
+                key={l.to}
+                to={l.to}
+                onClick={() => setMenuOpen(false)}
+                className="eyebrow transition-colors hover:text-foreground"
+                activeProps={{ className: "eyebrow text-foreground" }}
+                activeOptions={{ exact: l.to === "/" }}
+              >
+                {l.label}
+              </Link>
+            ))}
+          </div>
+        </div>
+      )}
     </header>
   );
 }
@@ -159,6 +198,19 @@ function SiteFooter() {
         {wedding.bride} &amp; {wedding.groom}
       </p>
       <p className="eyebrow mt-3">{wedding.dateLabel}</p>
+      <p className="mt-4 flex items-center justify-center gap-1.5 text-xs text-muted-foreground">
+        Built with
+        <Heart className="h-3.5 w-3.5 fill-gold text-gold" aria-label="love" />
+        by
+        <a
+          href="https://github.com/olajcodes"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="font-medium text-foreground underline decoration-gold/60 underline-offset-4 transition-colors hover:text-gold"
+        >
+          Olajcodes
+        </a>
+      </p>
     </footer>
   );
 }
