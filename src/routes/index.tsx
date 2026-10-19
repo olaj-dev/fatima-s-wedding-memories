@@ -3,7 +3,6 @@ import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Countdown } from "@/components/Countdown";
 import { Button } from "@/components/ui/button";
-import { createRsvpSubmission, type GuestSide } from "@/lib/rsvp";
 import { wedding, ayah, programme, contacts, gifts, rsvp } from "@/lib/wedding";
 import hero from "@/assets/intro-4.jpg";
 import { MapPin, Phone, Clock, Camera, Heart, Copy, Check } from "lucide-react";
@@ -52,7 +51,7 @@ function Section({
 }
 
 function RsvpSection() {
-  const [side, setSide] = useState<GuestSide | null>(null);
+  const [name, setName] = useState("");
   const [choice, setChoice] = useState<boolean | null>(null);
   const [email, setEmail] = useState("");
   const [note, setNote] = useState("");
@@ -62,14 +61,18 @@ function RsvpSection() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    const submission = createRsvpSubmission(side, choice, email, note);
-    if (!submission) {
-      setError("Please choose Bride or Groom and whether you can make it.");
+    if (!name.trim() || choice === null) {
+      setError("Please tell us your name and whether you can make it.");
       return;
     }
     setSending(true);
     setError(null);
-    const { error: insertError } = await supabase.from("rsvps").insert(submission);
+    const { error: insertError } = await supabase.from("rsvps").insert({
+      full_name: name.trim().slice(0, 100),
+      attending: choice,
+      email: email.trim().slice(0, 120) || null,
+      note: note.trim().slice(0, 500) || null,
+    });
     setSending(false);
     if (insertError) {
       setError("Something went wrong — please try again.");
@@ -97,7 +100,7 @@ function RsvpSection() {
           <div className="animate-rise mt-10 rounded-sm border border-gold/40 bg-primary/40 p-10 text-center">
             <Heart className="mx-auto h-6 w-6 text-gold" />
             <p className="mt-4 font-display text-2xl text-primary-foreground">
-              Thank you!
+              Thank you{name.trim() ? `, ${name.trim().split(" ")[0]}` : ""}!
             </p>
             <p className="mt-2 text-sm text-primary-foreground/80">
               {choice ? rsvp.successAccepted : rsvp.successDeclined}
@@ -108,27 +111,16 @@ function RsvpSection() {
             onSubmit={handleSubmit}
             className="mt-10 rounded-sm border border-primary-foreground/25 bg-primary/40 p-6 sm:p-10"
           >
-            <fieldset>
-              <legend className="eyebrow text-gold-soft">Guest of</legend>
-              <div className="mt-3 grid grid-cols-2 gap-3">
-                {(["Bride", "Groom"] as const).map((option) => (
-                  <Button
-                    key={option}
-                    type="button"
-                    variant="ghost"
-                    aria-pressed={side === option}
-                    onClick={() => setSide(option)}
-                    className={`h-auto rounded-full border px-4 py-2.5 text-sm ${
-                      side === option
-                        ? "border-gold bg-gold/20 text-primary-foreground hover:bg-gold/20 hover:text-primary-foreground"
-                        : "border-primary-foreground/30 text-primary-foreground/80 hover:border-gold/60 hover:bg-primary-foreground/10 hover:text-primary-foreground"
-                    }`}
-                  >
-                    {option}
-                  </Button>
-                ))}
-              </div>
-            </fieldset>
+            <label className="block">
+              <span className="eyebrow text-gold-soft">Your name</span>
+              <input
+                value={name}
+                onChange={(e) => setName(e.target.value)}
+                maxLength={100}
+                placeholder="Full name"
+                className={inputClass}
+              />
+            </label>
 
             <span className="eyebrow mt-6 block text-gold-soft">Will you attend?</span>
             <div className="mt-3 grid gap-3 sm:grid-cols-2">

@@ -38,8 +38,8 @@ export const programme = [
 ];
 
 export const contacts = [
-  { name: "Ayuba", role: "Bride's brother", phone: "07060636825" },
-  { name: "Groom's brother", role: "Groom's family", phone: "07032455376" },
+  { name: "Bride", role: "Bride's brother", phone: "07060636825" },
+  { name: "Groom", role: "Groom's family", phone: "07032455376" },
 ];
 
 export const gifts = {
