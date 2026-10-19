@@ -15,9 +15,15 @@ test("contact cards carry no role text", () => {
 });
 
 test("contact phones dial and open WhatsApp in international format", () => {
+  const expected = [
+    { name: "Bride", tel: "tel:+2347060636825", wa: "https://wa.me/2347060636825" },
+    { name: "Groom", tel: "tel:+2347032455376", wa: "https://wa.me/2347032455376" },
+  ];
   assert.equal(dialDigits("07060636825"), "2347060636825");
-  assert.equal(telHref(contacts[0].phone), "tel:+2347060636825");
-  assert.equal(telHref(contacts[1].phone), "tel:+2347032455376");
-  assert.equal(whatsappHref(contacts[0].phone), "https://wa.me/2347060636825");
-  assert.equal(whatsappHref(contacts[1].phone), "https://wa.me/2347032455376");
+  assert.equal(contacts.length, expected.length);
+  contacts.forEach((c, i) => {
+    assert.equal(c.name, expected[i]?.name);
+    assert.equal(telHref(c.phone), expected[i]?.tel);
+    assert.equal(whatsappHref(c.phone), expected[i]?.wa);
+  });
 });
