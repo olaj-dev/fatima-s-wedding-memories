@@ -14,6 +14,8 @@ export const Route = createFileRoute("/memories")({
           "Upload the photos you took on the Nikkah day and add them to our shared memory wall.",
       },
       { property: "og:title", content: "Share your Nikkah day photos" },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       {
         property: "og:description",
         content: "Upload the photos you took and add them to our shared memory wall.",

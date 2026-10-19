@@ -12,6 +12,8 @@ export const Route = createFileRoute("/note")({
         content: `A personal letter written for ${wedding.bride} on her Nikkah day.`,
       },
       { property: "og:title", content: `A note for ${wedding.bride}` },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       {
         property: "og:description",
         content: `A personal letter written for ${wedding.bride} on her Nikkah day.`,

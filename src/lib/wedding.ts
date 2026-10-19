@@ -9,14 +9,14 @@ export const wedding = {
   groomFull: "Masoud Tijjani",
   // TODO: hashtag not concluded yet
   // Nikkah day
-  date: "2026-11-07T09:00:00+01:00",
+  date: "2026-11-07T10:00:00+01:00",
   dateLabel: "Saturday, 7th November 2026",
-  timeLabel: "9:00 AM prompt · reception follows immediately",
+  timeLabel: "10:00 AM prompt · reception follows immediately",
   venue: "Digital Bridge Institute (Nitel)",
   // TODO: confirm full address / hall name
   address: "Kano, Nigeria",
   mapUrl: "https://maps.google.com/?q=Digital+Bridge+Institute+Kano",
-  dressCode: "Emerald green & champagne gold — modest attire please",
+  dressCode: "Emerald green and Champagne Gold",
   story:
     "Two families, one prayer answered. What began with a quiet introduction between loved ones has grown into a union built on faith, patience and mercy. We invite you to stand with us as Fatima and Masoud begin this beautiful journey.",
 } as const;
@@ -31,15 +31,15 @@ export const ayah = {
 
 export const programme = [
   { time: "8:30 AM", title: "Guests arrive & seating", note: "Light refreshments served" },
-  { time: "9:00 AM", title: "Nikkah ceremony", note: "Solemnisation & exchange of vows" },
+  { time: "10:00 AM", title: "Nikkah ceremony", note: "Solemnisation & exchange of vows" },
   { time: "Immediately after", title: "Reception", note: "Lunch, music & toasts" },
   { time: "12:00 PM", title: "Family photographs", note: "Both families & friends" },
   { time: "2:00 PM", title: "Send-forth", note: "Departure of the couple" },
 ];
 
 export const contacts = [
-  { name: "Ayuba", role: "Bride's brother", phone: "07060636825" },
-  { name: "Groom's brother", role: "Groom's family", phone: "07032455376" },
+  { name: "Bride", role: "Bride's brother", phone: "07060636825" },
+  { name: "Groom", role: "Groom's family", phone: "07032455376" },
 ];
 
 export const gifts = {

@@ -8,3 +8,5 @@
 > Commits you push to the connected branch sync back to Lovable and show up in
 > the editor, so keep the branch in a working state.
 <!-- LOVABLE:END -->
+
+- Keep wedding content centralized in `src/lib/wedding.ts` so dates and event details stay consistent across pages.
