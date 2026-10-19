@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { noteToFatima, wedding } from "@/lib/wedding";
-import { Heart } from "lucide-react";
+import { hashWord, noteToFatima, wedding } from "@/lib/wedding";
+import { Heart, Lock, LockOpen } from "lucide-react";
 
 export const Route = createFileRoute("/note")({
   head: () => ({
