@@ -37,7 +37,7 @@ function QuizPage() {
   const [finished, setFinished] = useState(false);
 
   const total = quiz.questions.length;
-  const current = quiz.questions[step];
+  const current = quiz.questions[Math.min(step, quiz.questions.length - 1)]!;
 
   function pick(index: number) {
     if (picked !== null) return;
