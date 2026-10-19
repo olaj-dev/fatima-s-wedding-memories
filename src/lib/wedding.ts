@@ -75,6 +75,15 @@ export const rsvp = {
   successDeclined: "You'll be dearly missed — thank you for letting us know.",
 } as const;
 
+/** SHA-256 hex digest — works in the browser and in server functions (Web Crypto). */
+export async function hashWord(word: string) {
+  const bytes = new TextEncoder().encode(word.trim().toLowerCase());
+  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  return Array.from(new Uint8Array(digest))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
 export const noteToFatima = {
   greeting: "My dearest Fatima,",
   paragraphs: [
