@@ -1,7 +1,7 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { noteToFatima, wedding } from "@/lib/wedding";
-import { Heart } from "lucide-react";
+import { hashWord, noteToFatima, wedding } from "@/lib/wedding";
+import { Heart, Lock, LockOpen } from "lucide-react";
 
 export const Route = createFileRoute("/note")({
   head: () => ({
@@ -25,6 +25,24 @@ export const Route = createFileRoute("/note")({
 
 function NotePage() {
   const [open, setOpen] = useState(false);
+  const [unlocking, setUnlocking] = useState(false);
+  const [code, setCode] = useState("");
+  const [checking, setChecking] = useState(false);
+  const [wrong, setWrong] = useState(false);
+
+  async function tryUnlock(e: React.FormEvent) {
+    e.preventDefault();
+    if (!code.trim()) return;
+    setChecking(true);
+    setWrong(false);
+    const digest = await hashWord(code);
+    setChecking(false);
+    if (digest === noteToFatima.secretHash) {
+      setOpen(true);
+    } else {
+      setWrong(true);
+    }
+  }
 
   return (
     <main className="bg-emerald-gradient min-h-[80vh] px-5 py-24">
@@ -33,17 +51,58 @@ function NotePage() {
         <h1 className="mt-3 text-5xl text-primary-foreground">A note for {wedding.bride}</h1>
         <span className="gold-rule mx-auto mt-6 max-w-xs" />
 
-        {!open && (
+        {!open && !unlocking && (
           <button
-            onClick={() => setOpen(true)}
+            onClick={() => setUnlocking(true)}
             className="animate-float mt-14 inline-flex flex-col items-center gap-4 rounded-sm border border-gold/60 bg-card/10 px-12 py-10 backdrop-blur-sm transition-transform hover:scale-105"
           >
-            <Heart className="h-8 w-8 text-gold-soft" />
+            <Lock className="h-8 w-8 text-gold-soft" />
             <span className="font-display text-2xl text-primary-foreground">
               Open your letter
             </span>
-            <span className="eyebrow text-primary-foreground/70">Tap to read</span>
+            <span className="eyebrow text-primary-foreground/70">
+              Sealed — for {wedding.bride}'s eyes only
+            </span>
           </button>
+        )}
+
+        {!open && unlocking && (
+          <form
+            onSubmit={tryUnlock}
+            className="animate-rise mx-auto mt-14 max-w-md rounded-sm border border-gold/40 bg-card/10 p-8 backdrop-blur-sm"
+          >
+            <LockOpen className="mx-auto h-6 w-6 text-gold-soft" />
+            <p className="mt-4 font-display text-xl text-primary-foreground">
+              Whisper the secret word
+            </p>
+            <p className="mt-2 text-sm text-primary-foreground/70">
+              Hint: {noteToFatima.secretHint}
+            </p>
+            <input
+              value={code}
+              onChange={(e) => {
+                setCode(e.target.value);
+                setWrong(false);
+              }}
+              autoFocus
+              maxLength={40}
+              placeholder="Enter the word…"
+              aria-label="Secret word"
+              className="mt-6 w-full rounded-sm border border-primary-foreground/30 bg-primary-foreground/10 px-3 py-2.5 text-center text-sm text-primary-foreground placeholder:text-primary-foreground/40 outline-none focus:border-gold"
+            />
+            {wrong && (
+              <p className="animate-rise mt-3 text-sm text-gold-soft">
+                That's not it — try again, {wedding.bride} would know this one.
+              </p>
+            )}
+            <button
+              type="submit"
+              disabled={checking}
+              className="mt-6 inline-flex items-center justify-center rounded-sm bg-gold px-8 py-2.5 text-sm font-medium text-accent-foreground transition-colors hover:bg-gold-soft disabled:opacity-60"
+            >
+              {checking ? "Checking…" : "Unlock the letter"}
+            </button>
+          </form>
         )}
 
         {open && (

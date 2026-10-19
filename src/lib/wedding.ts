@@ -75,7 +75,21 @@ export const rsvp = {
   successDeclined: "You'll be dearly missed — thank you for letting us know.",
 } as const;
 
+/** SHA-256 hex digest — works in the browser and in server functions (Web Crypto). */
+export async function hashWord(word: string) {
+  const bytes = new TextEncoder().encode(word.trim().toLowerCase());
+  const digest = await crypto.subtle.digest("SHA-256", bytes);
+  return Array.from(new Uint8Array(digest))
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("");
+}
+
 export const noteToFatima = {
+  // TODO: placeholder secret — replace with a code only Fatima would guess.
+  secretHash:
+    "4ac92356e5141eb671afa204765ba9091ff2035137d9b0a9a3bb4fe4d7dfa079", // "mawaddah"
+  secretHint:
+    "The word the Qur'an uses for the love placed between two hearts — Ar-Rum 30:21.",
   greeting: "My dearest Fatima,",
   paragraphs: [
     "I have watched you pray for this, quietly and patiently, long before anyone else knew what you were asking for. And here it is — answered, and more beautiful than we imagined.",
@@ -85,3 +99,43 @@ export const noteToFatima = {
   ],
   signature: "With all my love, always — Abioye",
 };
+
+// TODO: placeholder quiz questions — replace with real ones about Fatima.
+export const quiz = {
+  title: "How well do you know the Bride?",
+  intro:
+    "Think you know Fatima inside out? Answer these questions and prove your friendship before the big day.",
+  questions: [
+    {
+      question: "What is Fatima's favourite food?",
+      options: ["Jollof rice", "Tuwo shinkafa", "Amala & ewedu", "Suya"],
+      answer: 1,
+    },
+    {
+      question: "What is Fatima's favourite colour?",
+      options: ["Emerald green", "Baby pink", "Royal blue", "Lilac"],
+      answer: 0,
+    },
+    {
+      question: "Where did Fatima grow up?",
+      options: ["Lagos", "Kano", "Abuja", "Ilorin"],
+      answer: 1,
+    },
+    {
+      question: "What is Fatima's go-to drink?",
+      options: ["Zobo", "Kunu", "Chapman", "Fura da nono"],
+      answer: 3,
+    },
+    {
+      question: "What would Fatima pick for a quiet evening?",
+      options: ["A good book", "A movie marathon", "Gist with friends", "Cooking something new"],
+      answer: 2,
+    },
+  ],
+  results: [
+    { min: 0, label: "New friend", message: "You have some catching up to do — start with a phone call!" },
+    { min: 2, label: "Good friend", message: "You know her well, but there's more to discover." },
+    { min: 4, label: "Best friend material", message: "Impressive! You clearly pay attention." },
+    { min: 5, label: "Soul sister", message: "You know Fatima better than she knows herself!" },
+  ],
+} as const;
