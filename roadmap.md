@@ -1,4 +1,4 @@
-- [ ] Replace main background with the existing ring photo and remove Introduction Day carousel.
-- [ ] Update Nikkah to 10 AM prompt and simplify dress code.
-- [ ] Keep RSVP unchanged; replace contact names under Reach out to us with Bride and Groom, preserving phone numbers.
-- [ ] Check page rendering and resolve current preview error.
+- [x] Replace main background with the existing ring photo and remove Introduction Day carousel.
+- [x] Update Nikkah to 10 AM prompt and simplify dress code.
+- [x] Keep RSVP unchanged; replace contact names under Reach out to us with Bride and Groom, preserving phone numbers.
+- [x] Check page rendering and resolve current preview error.
