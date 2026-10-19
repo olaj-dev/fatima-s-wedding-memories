@@ -2,3 +2,4 @@
 - [x] Update Nikkah to 10 AM prompt and simplify dress code.
 - [x] Keep RSVP unchanged; replace contact names under Reach out to us with Bride and Groom, preserving phone numbers.
 - [x] Check page rendering and resolve current preview error.
+- [x] Add tap-to-call and WhatsApp buttons to the Bride and Groom cards; drop the role line.
