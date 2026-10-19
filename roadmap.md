@@ -1,0 +1,4 @@
+- [ ] Replace main background with the existing ring photo and remove Introduction Day carousel.
+- [ ] Update Nikkah to 10 AM prompt and simplify dress code.
+- [ ] Replace RSVP name input with Bride/Groom choices and verify submission.
+- [ ] Check page rendering and resolve current preview error.
