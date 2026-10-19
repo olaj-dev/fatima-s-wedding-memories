@@ -2,13 +2,10 @@ import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { Countdown } from "@/components/Countdown";
-import { Carousel, type Slide } from "@/components/Carousel";
+import { Button } from "@/components/ui/button";
+import { createRsvpSubmission, type GuestSide } from "@/lib/rsvp";
 import { wedding, ayah, programme, contacts, gifts, rsvp } from "@/lib/wedding";
-import hero from "@/assets/hero.jpg";
-import intro1 from "@/assets/intro-1.jpg";
-import intro2 from "@/assets/intro-2.jpg";
-import intro3 from "@/assets/intro-3.jpg";
-import intro4 from "@/assets/intro-4.jpg";
+import hero from "@/assets/intro-4.jpg";
 import { MapPin, Phone, Clock, Camera, Heart, Copy, Check } from "lucide-react";
 
 export const Route = createFileRoute("/")({
@@ -20,6 +17,8 @@ export const Route = createFileRoute("/")({
         content: `Join ${wedding.bride} and ${wedding.groom} on ${wedding.dateLabel} at ${wedding.venue}. Countdown, order of events, photos and directions.`,
       },
       { property: "og:title", content: `${wedding.bride} & ${wedding.groom} — Our Nikkah` },
+      { property: "og:type", content: "website" },
+      { name: "twitter:card", content: "summary_large_image" },
       {
         property: "og:description",
         content: `Our Nikkah holds ${wedding.dateLabel} at ${wedding.venue}. You are warmly invited.`,
@@ -28,13 +27,6 @@ export const Route = createFileRoute("/")({
   }),
   component: Home,
 });
-
-const slides: Slide[] = [
-  { src: intro1, caption: "The gifts, laid out with love — Introduction day" },
-  { src: intro2, caption: "Our bride, radiant in emerald" },
-  { src: intro3, caption: "Two families becoming one" },
-  { src: intro4, caption: "The moment it all became real" },
-];
 
 function Section({
   eyebrow,
@@ -60,7 +52,7 @@ function Section({
 }
 
 function RsvpSection() {
-  const [name, setName] = useState("");
+  const [side, setSide] = useState<GuestSide | null>(null);
   const [choice, setChoice] = useState<boolean | null>(null);
   const [email, setEmail] = useState("");
   const [note, setNote] = useState("");
@@ -70,18 +62,14 @@ function RsvpSection() {
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
-    if (!name.trim() || choice === null) {
-      setError("Please tell us your name and whether you can make it.");
+    const submission = createRsvpSubmission(side, choice, email, note);
+    if (!submission) {
+      setError("Please choose Bride or Groom and whether you can make it.");
       return;
     }
     setSending(true);
     setError(null);
-    const { error: insertError } = await supabase.from("rsvps").insert({
-      full_name: name.trim().slice(0, 100),
-      attending: choice,
-      email: email.trim().slice(0, 120) || null,
-      note: note.trim().slice(0, 500) || null,
-    });
+    const { error: insertError } = await supabase.from("rsvps").insert(submission);
     setSending(false);
     if (insertError) {
       setError("Something went wrong — please try again.");
@@ -109,7 +97,7 @@ function RsvpSection() {
           <div className="animate-rise mt-10 rounded-sm border border-gold/40 bg-primary/40 p-10 text-center">
             <Heart className="mx-auto h-6 w-6 text-gold" />
             <p className="mt-4 font-display text-2xl text-primary-foreground">
-              Thank you{name.trim() ? `, ${name.trim().split(" ")[0]}` : ""}!
+              Thank you!
             </p>
             <p className="mt-2 text-sm text-primary-foreground/80">
               {choice ? rsvp.successAccepted : rsvp.successDeclined}
@@ -120,41 +108,56 @@ function RsvpSection() {
             onSubmit={handleSubmit}
             className="mt-10 rounded-sm border border-primary-foreground/25 bg-primary/40 p-6 sm:p-10"
           >
-            <label className="block">
-              <span className="eyebrow text-gold-soft">Your name</span>
-              <input
-                value={name}
-                onChange={(e) => setName(e.target.value)}
-                maxLength={100}
-                placeholder="Full name"
-                className={inputClass}
-              />
-            </label>
+            <fieldset>
+              <legend className="eyebrow text-gold-soft">Guest of</legend>
+              <div className="mt-3 grid grid-cols-2 gap-3">
+                {(["Bride", "Groom"] as const).map((option) => (
+                  <Button
+                    key={option}
+                    type="button"
+                    variant="ghost"
+                    aria-pressed={side === option}
+                    onClick={() => setSide(option)}
+                    className={`h-auto rounded-full border px-4 py-2.5 text-sm ${
+                      side === option
+                        ? "border-gold bg-gold/20 text-primary-foreground hover:bg-gold/20 hover:text-primary-foreground"
+                        : "border-primary-foreground/30 text-primary-foreground/80 hover:border-gold/60 hover:bg-primary-foreground/10 hover:text-primary-foreground"
+                    }`}
+                  >
+                    {option}
+                  </Button>
+                ))}
+              </div>
+            </fieldset>
 
             <span className="eyebrow mt-6 block text-gold-soft">Will you attend?</span>
             <div className="mt-3 grid gap-3 sm:grid-cols-2">
-              <button
+              <Button
                 type="button"
+                variant="ghost"
+                aria-pressed={choice === true}
                 onClick={() => setChoice(true)}
-                className={`rounded-full border px-4 py-2.5 text-sm transition-colors ${
+                className={`h-auto rounded-full border px-4 py-2.5 text-sm transition-colors ${
                   choice === true
                     ? "border-gold bg-gold/20 text-primary-foreground"
                     : "border-primary-foreground/30 text-primary-foreground/80 hover:border-gold/60"
                 }`}
               >
                 Joyfully accept
-              </button>
-              <button
+              </Button>
+              <Button
                 type="button"
+                variant="ghost"
+                aria-pressed={choice === false}
                 onClick={() => setChoice(false)}
-                className={`rounded-full border px-4 py-2.5 text-sm transition-colors ${
+                className={`h-auto rounded-full border px-4 py-2.5 text-sm transition-colors ${
                   choice === false
                     ? "border-gold bg-gold/20 text-primary-foreground"
                     : "border-primary-foreground/30 text-primary-foreground/80 hover:border-gold/60"
                 }`}
               >
                 Regrettably decline
-              </button>
+              </Button>
             </div>
 
             <label className="mt-6 block">
@@ -181,13 +184,14 @@ function RsvpSection() {
               />
             </label>
 
-            <button
+            <Button
               type="submit"
+              variant="ghost"
               disabled={sending}
-              className="mt-8 inline-flex w-full items-center justify-center rounded-full border border-gold px-6 py-3 text-sm tracking-widest text-gold uppercase transition-colors hover:bg-gold hover:text-accent-foreground disabled:opacity-60"
+              className="mt-8 inline-flex h-auto w-full items-center justify-center rounded-full border border-gold px-6 py-3 text-sm tracking-widest text-gold uppercase transition-colors hover:bg-gold hover:text-accent-foreground disabled:opacity-60"
             >
               {sending ? "Sending…" : "Send RSVP"}
-            </button>
+            </Button>
             {error && (
               <p className="mt-4 text-center text-sm text-destructive-foreground">{error}</p>
             )}
@@ -261,7 +265,7 @@ function Home() {
       <section className="relative isolate flex min-h-[86vh] items-center justify-center overflow-hidden">
         <img
           src={hero}
-          alt={`${wedding.bride} and ${wedding.groom}`}
+          alt={`The engagement ring for ${wedding.bride} and ${wedding.groom}`}
           width={1600}
           height={1104}
           className="absolute inset-0 -z-10 h-full w-full object-cover"
@@ -315,18 +319,6 @@ function Home() {
           {wedding.story}
         </p>
       </Section>
-
-      {/* Carousel */}
-      <section className="bg-secondary/60 py-20">
-        <div className="mx-auto max-w-5xl px-5">
-          <div className="mb-10 text-center">
-            <p className="eyebrow">From the beginning</p>
-            <h2 className="mt-3 text-4xl sm:text-5xl">Introduction day</h2>
-            <span className="gold-rule mx-auto mt-6 max-w-xs" />
-          </div>
-          <Carousel slides={slides} />
-        </div>
-      </section>
 
       {/* Programme */}
       <Section eyebrow="The day itself" title="Order of programme">
