@@ -85,6 +85,11 @@ export async function hashWord(word: string) {
 }
 
 export const noteToFatima = {
+  // TODO: placeholder secret — replace with a code only Fatima would guess.
+  secretHash:
+    "9b3b0d70a1b31e51bbfaad2e1f1a37e2d5e1a3f0a3c2e8d7b6a5948372615049", // "mawaddah"
+  secretHint:
+    "The word the Qur'an uses for the love placed between two hearts — Ar-Rum 30:21.",
   greeting: "My dearest Fatima,",
   paragraphs: [
     "I have watched you pray for this, quietly and patiently, long before anyone else knew what you were asking for. And here it is — answered, and more beautiful than we imagined.",
