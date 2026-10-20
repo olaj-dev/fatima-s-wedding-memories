@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { hashWord, noteToFatima, wedding } from "@/lib/wedding";
+import { hashWord, isLetterFullyOpen, noteToFatima, wedding } from "@/lib/wedding";
 import { Heart, Lock, LockOpen } from "lucide-react";
 
 export const Route = createFileRoute("/note")({
@@ -25,7 +25,11 @@ export const Route = createFileRoute("/note")({
 
 function NotePage() {
   const [open, setOpen] = useState(false);
+  const [full, setFull] = useState(false);
   const [unlocking, setUnlocking] = useState(false);
+  const shown = full
+    ? noteToFatima.paragraphs
+    : noteToFatima.paragraphs.slice(0, noteToFatima.teaserParagraphs);
   const [code, setCode] = useState("");
   const [checking, setChecking] = useState(false);
   const [wrong, setWrong] = useState(false);
@@ -38,6 +42,8 @@ function NotePage() {
     const digest = await hashWord(code);
     setChecking(false);
     if (digest === noteToFatima.secretHash) {
+      const preview = new URLSearchParams(window.location.search).get("preview") === "full";
+      setFull(preview || isLetterFullyOpen());
       setOpen(true);
     } else {
       setWrong(true);
@@ -73,10 +79,7 @@ function NotePage() {
           >
             <LockOpen className="mx-auto h-6 w-6 text-gold-soft" />
             <p className="mt-4 font-display text-xl text-primary-foreground">
-              Whisper the secret word
-            </p>
-            <p className="mt-2 text-sm text-primary-foreground/70">
-              Hint: {noteToFatima.secretHint}
+              {noteToFatima.question}
             </p>
             <input
               value={code}
@@ -86,7 +89,7 @@ function NotePage() {
               }}
               autoFocus
               maxLength={40}
-              placeholder="Enter the word…"
+              placeholder="Enter the surname…"
               aria-label="Secret word"
               className="mt-6 w-full rounded-sm border border-primary-foreground/30 bg-primary-foreground/10 px-3 py-2.5 text-center text-sm text-primary-foreground placeholder:text-primary-foreground/40 outline-none focus:border-gold"
             />
