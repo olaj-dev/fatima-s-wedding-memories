@@ -15,6 +15,13 @@
       "when": 1790262410196,
       "tag": "0001_create_rsvps",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1792488990182,
+      "tag": "0002_quiz_scores_and_memory_media",
+      "breakpoints": true
     }
   ]
 }
