@@ -112,7 +112,7 @@ function NotePage() {
           <article className="animate-rise mt-14 rounded-sm border border-gold/40 bg-card p-8 text-left shadow-elegant sm:p-12">
             <p className="font-script text-4xl text-foreground">{noteToFatima.greeting}</p>
             <div className="mt-8 space-y-6">
-              {noteToFatima.paragraphs.map((p, i) => (
+              {shown.map((p, i) => (
                 <p
                   key={p}
                   className="animate-rise font-display text-lg leading-relaxed text-foreground"
@@ -122,13 +122,35 @@ function NotePage() {
                 </p>
               ))}
             </div>
-            <span className="gold-rule my-8" />
-            <p
-              className="animate-rise font-script text-3xl text-foreground"
-              style={{ animationDelay: `${0.3 + noteToFatima.paragraphs.length * 0.25}s` }}
-            >
-              {noteToFatima.signature}
-            </p>
+            {full ? (
+              <>
+                <span className="gold-rule my-8" />
+                <p
+                  className="animate-rise font-script text-3xl text-foreground"
+                  style={{ animationDelay: `${0.3 + shown.length * 0.25}s` }}
+                >
+                  {noteToFatima.signature}
+                </p>
+              </>
+            ) : (
+              <div className="relative mt-2">
+                <p
+                  aria-hidden
+                  className="select-none font-display text-lg leading-relaxed text-foreground/60 blur-sm"
+                >
+                  {"Some words are worth waiting for, and these ones are saved for the morning you become a wife…"}
+                </p>
+                <div className="animate-rise mt-8 rounded-sm border border-gold/40 bg-primary p-6 text-center">
+                  <Lock className="mx-auto h-5 w-5 text-gold-soft" />
+                  <p className="mt-3 font-display text-xl text-primary-foreground">
+                    The rest is sealed until your Nikkah morning
+                  </p>
+                  <p className="mt-2 text-sm text-primary-foreground/75">
+                    Come back on {wedding.dateLabel} to read every word. ❤️
+                  </p>
+                </div>
+              </div>
+            )}
           </article>
         )}
       </div>
