@@ -1,5 +1,7 @@
-- [x] Replace main background with the existing ring photo and remove Introduction Day carousel.
-- [x] Update Nikkah to 10 AM prompt and simplify dress code.
-- [x] Keep RSVP unchanged; replace contact names under Reach out to us with Bride and Groom, preserving phone numbers.
-- [x] Check page rendering and resolve current preview error.
-- [x] Add tap-to-call and WhatsApp buttons to the Bride and Groom cards; drop the role line.
+- [x] Replace main background with the ring photo; remove Introduction Day carousel.
+- [x] Nikkah 10 AM prompt; simplified dress code; Bride/Groom contacts with Call + WhatsApp.
+- [ ] Bridal shower page with shareable Nov 3–7 programme card.
+- [ ] 10-question quiz with instructions popup, Nov 3 5 PM lock (?test=1 bypass), Chief Bridesmaid leaderboard.
+- [ ] Memories wall: video uploads up to 1GB, event category tags + filters.
+- [ ] Letter: EPU surname question, teaser before Nov 7, full letter on Nov 7.
+- [ ] New favicon.

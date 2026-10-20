@@ -1,6 +1,6 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useState } from "react";
-import { hashWord, noteToFatima, wedding } from "@/lib/wedding";
+import { hashWord, isLetterFullyOpen, noteToFatima, wedding } from "@/lib/wedding";
 import { Heart, Lock, LockOpen } from "lucide-react";
 
 export const Route = createFileRoute("/note")({
@@ -25,7 +25,11 @@ export const Route = createFileRoute("/note")({
 
 function NotePage() {
   const [open, setOpen] = useState(false);
+  const [full, setFull] = useState(false);
   const [unlocking, setUnlocking] = useState(false);
+  const shown = full
+    ? noteToFatima.paragraphs
+    : noteToFatima.paragraphs.slice(0, noteToFatima.teaserParagraphs);
   const [code, setCode] = useState("");
   const [checking, setChecking] = useState(false);
   const [wrong, setWrong] = useState(false);
@@ -38,6 +42,8 @@ function NotePage() {
     const digest = await hashWord(code);
     setChecking(false);
     if (digest === noteToFatima.secretHash) {
+      const preview = new URLSearchParams(window.location.search).get("preview") === "full";
+      setFull(preview || isLetterFullyOpen());
       setOpen(true);
     } else {
       setWrong(true);
@@ -73,10 +79,7 @@ function NotePage() {
           >
             <LockOpen className="mx-auto h-6 w-6 text-gold-soft" />
             <p className="mt-4 font-display text-xl text-primary-foreground">
-              Whisper the secret word
-            </p>
-            <p className="mt-2 text-sm text-primary-foreground/70">
-              Hint: {noteToFatima.secretHint}
+              {noteToFatima.question}
             </p>
             <input
               value={code}
@@ -86,7 +89,7 @@ function NotePage() {
               }}
               autoFocus
               maxLength={40}
-              placeholder="Enter the word…"
+              placeholder="Enter the surname…"
               aria-label="Secret word"
               className="mt-6 w-full rounded-sm border border-primary-foreground/30 bg-primary-foreground/10 px-3 py-2.5 text-center text-sm text-primary-foreground placeholder:text-primary-foreground/40 outline-none focus:border-gold"
             />
@@ -109,7 +112,7 @@ function NotePage() {
           <article className="animate-rise mt-14 rounded-sm border border-gold/40 bg-card p-8 text-left shadow-elegant sm:p-12">
             <p className="font-script text-4xl text-foreground">{noteToFatima.greeting}</p>
             <div className="mt-8 space-y-6">
-              {noteToFatima.paragraphs.map((p, i) => (
+              {shown.map((p, i) => (
                 <p
                   key={p}
                   className="animate-rise font-display text-lg leading-relaxed text-foreground"
@@ -119,13 +122,35 @@ function NotePage() {
                 </p>
               ))}
             </div>
-            <span className="gold-rule my-8" />
-            <p
-              className="animate-rise font-script text-3xl text-foreground"
-              style={{ animationDelay: `${0.3 + noteToFatima.paragraphs.length * 0.25}s` }}
-            >
-              {noteToFatima.signature}
-            </p>
+            {full ? (
+              <>
+                <span className="gold-rule my-8" />
+                <p
+                  className="animate-rise font-script text-3xl text-foreground"
+                  style={{ animationDelay: `${0.3 + shown.length * 0.25}s` }}
+                >
+                  {noteToFatima.signature}
+                </p>
+              </>
+            ) : (
+              <div className="relative mt-2">
+                <p
+                  aria-hidden
+                  className="select-none font-display text-lg leading-relaxed text-foreground/60 blur-sm"
+                >
+                  {"Some words are worth waiting for, and these ones are saved for the morning you become a wife…"}
+                </p>
+                <div className="animate-rise mt-8 rounded-sm border border-gold/40 bg-primary p-6 text-center">
+                  <Lock className="mx-auto h-5 w-5 text-gold-soft" />
+                  <p className="mt-3 font-display text-xl text-primary-foreground">
+                    The rest is sealed until your Nikkah morning
+                  </p>
+                  <p className="mt-2 text-sm text-primary-foreground/75">
+                    Come back on {wedding.dateLabel} to read every word. ❤️
+                  </p>
+                </div>
+              </div>
+            )}
           </article>
         )}
       </div>

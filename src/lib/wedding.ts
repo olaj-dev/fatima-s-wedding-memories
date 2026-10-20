@@ -85,11 +85,12 @@ export async function hashWord(word: string) {
 }
 
 export const noteToFatima = {
-  // TODO: placeholder secret — replace with a code only Fatima would guess.
+  question: "What is the surname of your bestie back then in EPU?",
   secretHash:
-    "4ac92356e5141eb671afa204765ba9091ff2035137d9b0a9a3bb4fe4d7dfa079", // "mawaddah"
-  secretHint:
-    "The word the Qur'an uses for the love placed between two hearts — Ar-Rum 30:21.",
+    "93294099642f04b2934626d1a29455670464d6cc5bc6b32a46731df428303c30",
+  /** Before this moment only a teaser is shown; from it the full letter opens. */
+  fullRevealAt: "2026-11-07T00:00:00+01:00",
+  teaserParagraphs: 1,
   greeting: "My dearest Fatima,",
   paragraphs: [
     "I have watched you pray for this, quietly and patiently, long before anyone else knew what you were asking for. And here it is — answered, and more beautiful than we imagined.",
@@ -100,42 +101,101 @@ export const noteToFatima = {
   signature: "With all my love, always — Abioye",
 };
 
-// TODO: placeholder quiz questions — replace with real ones about Fatima.
+export function isLetterFullyOpen(now: Date = new Date()) {
+  return now.getTime() >= new Date(noteToFatima.fullRevealAt).getTime();
+}
+
+export const bridalWeek = [
+  { date: "2026-11-03", day: "Tue", label: "3rd Nov", title: "Bridal Soirée" },
+  { date: "2026-11-04", day: "Wed", label: "4th Nov", title: "Dance Practice" },
+  { date: "2026-11-05", day: "Thu", label: "5th Nov", title: "Henna Day & Dance Practice" },
+  { date: "2026-11-06", day: "Fri", label: "6th Nov", title: "Engagement Ceremony" },
+  { date: "2026-11-07", day: "Sat", label: "7th Nov", title: "The Main Wedding" },
+];
+
+export const memoryCategories = [
+  { id: "soiree", label: "Bridal Soirée" },
+  { id: "dance", label: "Dance Practice" },
+  { id: "henna", label: "Henna Day" },
+  { id: "engagement", label: "Engagement" },
+  { id: "nikkah", label: "Nikkah Day" },
+  { id: "general", label: "General" },
+] as const;
+
+export const MAX_UPLOAD_MB = 200;
+
 export const quiz = {
-  title: "How well do you know the Bride?",
-  intro:
-    "Think you know Fatima inside out? Answer these questions and prove your friendship before the big day.",
+  title: "How well do you know Fatima?",
+  intro: "The Bridal Soirée game. Answer all 10 and race for the Chief Bridesmaid crown.",
+  /** Quiz opens for everyone at this moment (5 PM, Lagos time). */
+  opensAt: "2026-11-03T17:00:00+01:00",
+  instructions: [
+    "There are 10 questions about Fatima — pick one answer for each.",
+    "Each correct answer earns 1 point. You can't change an answer once picked.",
+    "At the end, enter a nickname to post your score on the leaderboard.",
+    "Highest score wins. On a tie, whoever submitted first ranks higher.",
+    "The #1 spot is crowned Chief Bridesmaid 👑",
+  ],
   questions: [
     {
-      question: "What is Fatima's favourite food?",
-      options: ["Jollof rice", "Tuwo shinkafa", "Amala & ewedu", "Suya"],
-      answer: 1,
-    },
-    {
-      question: "What is Fatima's favourite colour?",
-      options: ["Emerald green", "Baby pink", "Royal blue", "Lilac"],
-      answer: 0,
-    },
-    {
-      question: "Where did Fatima grow up?",
-      options: ["Lagos", "Kano", "Abuja", "Ilorin"],
-      answer: 1,
-    },
-    {
-      question: "What is Fatima's go-to drink?",
-      options: ["Zobo", "Kunu", "Chapman", "Fura da nono"],
+      question: "If Fatima is having a long day, what will fix her mood instantly?",
+      options: ["Suya & chilled drink", "Ice cream / Boba / Parfait", "Indomie with extra spice & egg", "Chocolate & pastries"],
       answer: 3,
     },
     {
-      question: "What would Fatima pick for a quiet evening?",
-      options: ["A good book", "A movie marathon", "Gist with friends", "Cooking something new"],
+      question: "Where did Fatima and Masoud first meet / talk?",
+      options: ["At university / school", "Through mutual family friends", "At a wedding / event", "On social media / DMs"],
+      answer: 1,
+    },
+    {
+      question: "What is guaranteed to get on Fatima's last nerve?",
+      options: ["People being late / unpunctual", "Slow replies or left on read", "Loud chewing / bad table manners", "Plans being cancelled last minute"],
+      answer: 3,
+    },
+    {
+      question: "What is Fatima most likely doing on a quiet, lazy Saturday morning?",
+      options: ["Sleeping in until noon", "Binge-watching series / K-dramas", "Online shopping or scrolling TikTok", "Up early cleaning and organizing the room"],
+      answer: 1,
+    },
+    {
+      question: "What does Fatima have a complete weakness for when shopping?",
+      options: ["Perfumes / Oud", "Bags & shoes", "Abayas & fabrics", "Skincare & lip glosses"],
       answer: 2,
+    },
+    {
+      question: "What is one thing Fatima secretly loves doing?",
+      options: ["Singing all the lyrics to 2000s throwback songs", "Cooking like a master chef", "Getting super competitive during board/card games", "Crying at emotional movie scenes"],
+      answer: 1,
+    },
+    {
+      question: "What is Fatima's ultimate dream travel / vacation destination?",
+      options: ["Maldives / Zanzibar", "South Korea / Istanbul", "Paris / London", "Umrah in Makkah & Madinah"],
+      answer: 1,
+    },
+    {
+      question: "Which part of wedding planning took Fatima the most time to decide on?",
+      options: ["The dress & fabric colors", "The guest list", "The photo shoots & poses", "The food menu & cake"],
+      answer: 0,
+    },
+    {
+      question: "If Fatima were stranded on an island and could only take ONE thing, what would it be?",
+      options: ["Her phone (with unlimited data)", "Money!", "Her favorite lip balm / perfume", "A lifetime supply of snacks"],
+      answer: 3,
+    },
+    {
+      question: "What is Fatima most likely to say after her Nikkah?",
+      options: ["Finally!", "Where is the food?", "*Starts crying*", "Is it time to take pictures already?"],
+      answer: 0,
     },
   ],
   results: [
     { min: 0, label: "New friend", message: "You have some catching up to do — start with a phone call!" },
-    { min: 2, label: "Good friend", message: "You know her well, but there's more to discover." },
-    { min: 4, label: "Best friend material", message: "Impressive! You clearly pay attention." },
-    { min: 5, label: "Soul sister", message: "You know Fatima better than she knows herself!" },
+    { min: 4, label: "Good friend", message: "You know her well, but there's more to discover." },
+    { min: 7, label: "Best friend material", message: "Impressive! You clearly pay attention." },
+    { min: 10, label: "Soul sister", message: "You know Fatima better than she knows herself!" },
   ],
 } as const;
+
+export function isQuizOpen(now: Date = new Date()) {
+  return now.getTime() >= new Date(quiz.opensAt).getTime();
+}
