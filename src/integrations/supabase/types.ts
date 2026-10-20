@@ -17,24 +17,57 @@ export type Database = {
       memories: {
         Row: {
           caption: string | null
+          category: string
           created_at: string
           guest_name: string | null
           id: string
           image_path: string
+          media_type: string
         }
         Insert: {
           caption?: string | null
+          category?: string
           created_at?: string
           guest_name?: string | null
           id?: string
           image_path: string
+          media_type?: string
         }
         Update: {
           caption?: string | null
+          category?: string
           created_at?: string
           guest_name?: string | null
           id?: string
           image_path?: string
+          media_type?: string
+        }
+        Relationships: []
+      }
+      quiz_scores: {
+        Row: {
+          created_at: string
+          id: string
+          is_test: boolean
+          nickname: string
+          score: number
+          total_questions: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          is_test?: boolean
+          nickname: string
+          score: number
+          total_questions?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          is_test?: boolean
+          nickname?: string
+          score?: number
+          total_questions?: number
         }
         Relationships: []
       }
