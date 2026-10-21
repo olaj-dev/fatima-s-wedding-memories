@@ -1,6 +1,18 @@
 import { test } from "node:test";
 import { strict as assert } from "node:assert";
-import { wedding, programme, contacts, telHref, whatsappHref, dialDigits } from "./wedding";
+import {
+  wedding,
+  programme,
+  contacts,
+  telHref,
+  whatsappHref,
+  dialDigits,
+  noteToFatima,
+  isLetterFullyOpen,
+  MAX_UPLOAD_MB,
+  bridalWeek,
+  memoryCategories,
+} from "./wedding";
 
 test("Nikkah starts at 10 AM Lagos time on November 7", () => {
   assert.equal(wedding.date, "2026-11-07T10:00:00+01:00");
@@ -26,4 +38,32 @@ test("contact phones dial and open WhatsApp in international format", () => {
     assert.equal(telHref(c.phone), expected[i]?.tel);
     assert.equal(whatsappHref(c.phone), expected[i]?.wa);
   });
+});
+
+test("letter teaser shows the first two paragraphs before the reveal", () => {
+  assert.equal(noteToFatima.teaserParagraphs, 2);
+  assert.ok(noteToFatima.paragraphs.length > noteToFatima.teaserParagraphs);
+  assert.equal(noteToFatima.signature, "Abdullateef");
+  assert.ok(noteToFatima.dua.length > 0);
+});
+
+test("letter opens in full only on the Nikkah morning, November 7", () => {
+  assert.equal(isLetterFullyOpen(new Date("2026-11-06T23:59:00+01:00")), false);
+  assert.equal(isLetterFullyOpen(new Date("2026-11-07T00:00:00+01:00")), true);
+  assert.equal(isLetterFullyOpen(new Date("2026-11-08T09:00:00+01:00")), true);
+});
+
+test("memory wall accepts uploads up to 1GB", () => {
+  assert.equal(MAX_UPLOAD_MB, 1024);
+});
+
+test("bridal week covers Nov 3 to Nov 7 and matches the event tags", () => {
+  assert.deepEqual(
+    bridalWeek.map((d) => d.date),
+    ["2026-11-03", "2026-11-04", "2026-11-05", "2026-11-06", "2026-11-07"],
+  );
+  const ids = memoryCategories.map((c) => c.id) as string[];
+  for (const id of ["soiree", "dance", "henna", "engagement", "nikkah", "general"]) {
+    assert.ok(ids.includes(id), `missing category: ${id}`);
+  }
 });
