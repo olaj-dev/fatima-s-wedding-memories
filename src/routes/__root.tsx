@@ -126,6 +126,7 @@ function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
   const links = [
     { to: "/", label: "Home" },
+    { to: "/bridal-shower", label: "Bridal Shower" },
     { to: "/note", label: "A Note for Fatima" },
     { to: "/memories", label: "Share Photos" },
     { to: "/quiz", label: "How Well Do You Know Her?" },

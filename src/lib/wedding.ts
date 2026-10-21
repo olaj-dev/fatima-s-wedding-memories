@@ -90,15 +90,19 @@ export const noteToFatima = {
     "93294099642f04b2934626d1a29455670464d6cc5bc6b32a46731df428303c30",
   /** Before this moment only a teaser is shown; from it the full letter opens. */
   fullRevealAt: "2026-11-07T00:00:00+01:00",
-  teaserParagraphs: 1,
+  teaserParagraphs: 2,
   greeting: "My dearest Fatima,",
   paragraphs: [
-    "I have watched you pray for this, quietly and patiently, long before anyone else knew what you were asking for. And here it is — answered, and more beautiful than we imagined.",
-    "You have been the kind of friend who shows up: in the small hours, in the hard seasons, in the plain ordinary days that nobody writes about. Knowing you has made me softer and braver at once.",
-    "So today I am not losing a friend to marriage. I am watching a whole new chapter open for someone I love, and I get a front-row seat.",
-    "May your home be filled with mawaddah and rahmah. May laughter outnumber tears. May you always be each other's peace.",
+    "Hmnnnnn, Àṣàkẹ́ mi, ọrẹ mi ọwọn. Just the way I always hail you when I want to trouble your life! 😊",
+    "Ṣé o rí i báyìí? I have watched you pray for this quietly and patiently, long before anyone knew what was in your heart. Àbájọ tí wọ́n fi ní àdúrà gbà! Here it is — answered, and more beautiful than any of us imagined.",
+    "You have always been that one friend who shows up: in the odd hours, in the difficult seasons, and in the quiet days that nobody talks about. Knowing you has made me softer and braver at once. Ọrẹ tòótọ́ lo jẹ́ fún mi.",
+    "So today, mi ò padánù ọrẹ rárá. I'm just watching the most beautiful chapter begin for someone I truly cherish. Bí ó tilẹ̀ jẹ́ pé I am not there physically to hold the mic with Usman and force you to pronounce three (tiwi) 😂 just to catch cruise with your R-factor, my heart is right there with you.",
+    "May your home be filled with mawaddah and rahmah. May your joy never run dry, and may you and your husband always be each other's solace.",
   ],
-  signature: "With all my love, always — Abioye",
+  dua: "بَارَكَ اللَّهُ لَكُمَا وَبَارَكَ عَلَيْكُمَا وَجَمَعَ بَيْنَكُمَا فِي خَيْرٍ",
+  amarya: "Amarya! ✨👰🏽‍♀️",
+  closing: "O kú oríire, ìyàwó wa! Always your personal person,",
+  signature: "Abdullateef",
 };
 
 export function isLetterFullyOpen(now: Date = new Date()) {
