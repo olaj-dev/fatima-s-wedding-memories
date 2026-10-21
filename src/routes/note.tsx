@@ -124,10 +124,29 @@ function NotePage() {
             </div>
             {full ? (
               <>
+                <p
+                  dir="rtl"
+                  className="animate-rise mt-8 text-center font-arabic text-2xl leading-relaxed text-foreground sm:text-3xl"
+                  style={{ animationDelay: `${0.3 + shown.length * 0.25}s` }}
+                >
+                  {noteToFatima.dua}
+                </p>
+                <p
+                  className="animate-rise mt-6 text-center font-display text-2xl text-foreground"
+                  style={{ animationDelay: `${0.4 + shown.length * 0.25}s` }}
+                >
+                  {noteToFatima.amarya}
+                </p>
                 <span className="gold-rule my-8" />
                 <p
-                  className="animate-rise font-script text-3xl text-foreground"
-                  style={{ animationDelay: `${0.3 + shown.length * 0.25}s` }}
+                  className="animate-rise font-display text-xl leading-relaxed text-foreground"
+                  style={{ animationDelay: `${0.5 + shown.length * 0.25}s` }}
+                >
+                  {noteToFatima.closing}
+                </p>
+                <p
+                  className="animate-rise mt-4 font-script text-4xl text-foreground"
+                  style={{ animationDelay: `${0.6 + shown.length * 0.25}s` }}
                 >
                   {noteToFatima.signature}
                 </p>

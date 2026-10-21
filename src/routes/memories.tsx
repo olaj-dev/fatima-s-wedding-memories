@@ -1,24 +1,25 @@
 import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { wedding } from "@/lib/wedding";
-import { Camera, Loader2, UploadCloud } from "lucide-react";
+import { MAX_UPLOAD_MB, memoryCategories, wedding } from "@/lib/wedding";
+import { Camera, Clapperboard, Images, Loader2, UploadCloud } from "lucide-react";
 
 export const Route = createFileRoute("/memories")({
   head: () => ({
     meta: [
-      { title: `Share your photos — ${wedding.bride} & ${wedding.groom}` },
+      { title: `Share your photos & videos — ${wedding.bride} & ${wedding.groom}` },
       {
         name: "description",
         content:
-          "Upload the photos you took on the Nikkah day and add them to our shared memory wall.",
+          "Upload the photos and videos you took during Fatima's bridal week and the Nikkah day, tag them by event, and add them to our shared memory wall.",
       },
-      { property: "og:title", content: "Share your Nikkah day photos" },
+      { property: "og:title", content: "Share your Nikkah day photos & videos" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary_large_image" },
       {
         property: "og:description",
-        content: "Upload the photos you took and add them to our shared memory wall.",
+        content:
+          "Upload the photos and videos you took and add them to our shared memory wall.",
       },
     ],
   }),
@@ -30,8 +31,15 @@ type Memory = {
   image_path: string;
   guest_name: string | null;
   caption: string | null;
+  media_type: string;
+  category: string;
   created_at: string;
 };
+
+type Filter = "all" | "videos" | (typeof memoryCategories)[number]["id"];
+
+const categoryLabel = (id: string) =>
+  memoryCategories.find((c) => c.id === id)?.label ?? "General";
 
 function MemoriesPage() {
   const [memories, setMemories] = useState<Memory[]>([]);
@@ -41,6 +49,8 @@ function MemoriesPage() {
   const [status, setStatus] = useState<string | null>(null);
   const [guestName, setGuestName] = useState("");
   const [caption, setCaption] = useState("");
+  const [category, setCategory] = useState<string>("general");
+  const [filter, setFilter] = useState<Filter>("all");
   const fileRef = useRef<HTMLInputElement>(null);
 
   async function load() {
@@ -76,12 +86,15 @@ function MemoriesPage() {
     if (!files || files.length === 0) return;
     setUploading(true);
     setStatus(null);
+    const maxBytes = MAX_UPLOAD_MB * 1024 * 1024;
     let uploaded = 0;
 
     for (const file of Array.from(files).slice(0, 10)) {
-      if (!file.type.startsWith("image/")) continue;
-      if (file.size > 15 * 1024 * 1024) continue;
-      const ext = file.name.split(".").pop() ?? "jpg";
+      const isImage = file.type.startsWith("image/");
+      const isVideo = file.type.startsWith("video/");
+      if (!isImage && !isVideo) continue;
+      if (file.size > maxBytes) continue;
+      const ext = file.name.split(".").pop() ?? (isVideo ? "mp4" : "jpg");
       const path = `${crypto.randomUUID()}.${ext}`;
       const { error: upErr } = await supabase.storage
         .from("memories")
@@ -91,6 +104,8 @@ function MemoriesPage() {
         image_path: path,
         guest_name: guestName.trim().slice(0, 60) || null,
         caption: caption.trim().slice(0, 200) || null,
+        media_type: isVideo ? "video" : "image",
+        category,
       });
       if (!rowErr) uploaded += 1;
     }
@@ -100,21 +115,35 @@ function MemoriesPage() {
     if (fileRef.current) fileRef.current.value = "";
     setStatus(
       uploaded > 0
-        ? `Thank you! ${uploaded} photo${uploaded > 1 ? "s" : ""} added to the wall.`
-        : "Sorry, those photos could not be uploaded. Please try again.",
+        ? `Thank you! ${uploaded} file${uploaded > 1 ? "s" : ""} added to the wall.`
+        : "Sorry, those files could not be uploaded. Please try again.",
     );
     void load();
   }
 
+  const visible = memories.filter((m) =>
+    filter === "all"
+      ? true
+      : filter === "videos"
+        ? m.media_type === "video"
+        : m.category === filter,
+  );
+
+  const filters: { id: Filter; label: string }[] = [
+    { id: "all", label: "All" },
+    ...memoryCategories.map((c) => ({ id: c.id as Filter, label: c.label })),
+    { id: "videos", label: "Videos Only" },
+  ];
+
   return (
     <main>
       <section className="bg-emerald-gradient px-5 py-20 text-center">
-        <p className="eyebrow text-gold-soft">Nikkah day</p>
+        <p className="eyebrow text-gold-soft">Bridal week to Nikkah day</p>
         <h1 className="mt-3 text-5xl text-primary-foreground">Memory wall</h1>
         <span className="gold-rule mx-auto mt-6 max-w-xs" />
         <p className="mx-auto mt-6 max-w-xl text-primary-foreground/85">
-          Took a photo today? Add it here so {wedding.bride} and {wedding.groom} can keep every
-          moment they didn't get to see.
+          Took a photo or video during the bridal week or on the Nikkah day? Add it here so{" "}
+          {wedding.bride} and {wedding.groom} can keep every moment they didn't get to see.
         </p>
       </section>
 
@@ -143,10 +172,30 @@ function MemoriesPage() {
             </label>
           </div>
 
+          <div className="mt-6">
+            <span className="eyebrow">What is this for?</span>
+            <div className="mt-3 flex flex-wrap gap-2">
+              {memoryCategories.map((c) => (
+                <button
+                  key={c.id}
+                  type="button"
+                  onClick={() => setCategory(c.id)}
+                  className={`rounded-full border px-4 py-1.5 text-xs transition-colors ${
+                    category === c.id
+                      ? "border-gold bg-primary text-primary-foreground"
+                      : "border-gold/40 bg-background text-muted-foreground hover:border-gold"
+                  }`}
+                >
+                  {c.label}
+                </button>
+              ))}
+            </div>
+          </div>
+
           <input
             ref={fileRef}
             type="file"
-            accept="image/*"
+            accept="image/*,video/*"
             multiple
             className="hidden"
             onChange={(e) => void handleUpload(e.target.files)}
@@ -161,49 +210,83 @@ function MemoriesPage() {
             ) : (
               <UploadCloud className="h-4 w-4" />
             )}
-            {uploading ? "Uploading…" : "Choose photos to upload"}
+            {uploading ? "Uploading…" : "Choose photos or videos"}
           </button>
           <p className="mt-3 text-center text-xs text-muted-foreground">
-            Up to 10 photos at a time, 15MB each. They appear on the wall straight away.
+            Up to 10 files at a time, up to 1GB each. Photos and videos appear on the wall straight
+            away.
           </p>
           {status && <p className="mt-4 text-center text-sm text-foreground">{status}</p>}
         </div>
       </section>
 
       <section className="mx-auto max-w-5xl px-5 pb-24">
+        <div className="mb-6 flex flex-wrap justify-center gap-2">
+          {filters.map((f) => (
+            <button
+              key={f.id}
+              type="button"
+              onClick={() => setFilter(f.id)}
+              className={`rounded-full border px-4 py-1.5 text-xs transition-colors ${
+                filter === f.id
+                  ? "border-gold bg-primary text-primary-foreground"
+                  : "border-gold/40 bg-card text-muted-foreground hover:border-gold"
+              }`}
+            >
+              {f.id === "videos" && <Clapperboard className="mr-1.5 inline h-3 w-3" />}
+              {f.label}
+            </button>
+          ))}
+        </div>
+
         {loading ? (
           <p className="text-center text-muted-foreground">Loading the wall…</p>
-        ) : memories.length === 0 ? (
+        ) : visible.length === 0 ? (
           <div className="rounded-sm border border-dashed border-gold/40 py-20 text-center">
-            <Camera className="mx-auto h-6 w-6 text-gold" />
-            <p className="mt-4 font-display text-xl">No photos yet</p>
+            <Images className="mx-auto h-6 w-6 text-gold" />
+            <p className="mt-4 font-display text-xl">Nothing here yet</p>
             <p className="mt-2 text-sm text-muted-foreground">
-              Be the first to share a memory from the day.
+              {filter === "all"
+                ? "Be the first to share a memory from the week."
+                : "No memories match this filter — try another."}
             </p>
           </div>
         ) : (
-          <div className="columns-2 gap-4 sm:columns-3">
-            {memories.map((m) => (
+          <div className="columns-1 gap-4 sm:columns-2 lg:columns-3">
+            {visible.map((m) => (
               <figure
                 key={m.id}
                 className="animate-rise mb-4 break-inside-avoid overflow-hidden rounded-sm border border-gold/25 bg-card"
               >
-                {urls[m.image_path] && (
-                  <img
-                    src={urls[m.image_path]}
-                    alt={m.caption ?? "Guest photo"}
-                    loading="lazy"
-                    className="w-full object-cover"
-                  />
+                {m.media_type === "video" ? (
+                  urls[m.image_path] && (
+                    <video
+                      src={urls[m.image_path]}
+                      controls
+                      preload="metadata"
+                      playsInline
+                      className="w-full"
+                    />
+                  )
+                ) : (
+                  urls[m.image_path] && (
+                    <img
+                      src={urls[m.image_path]}
+                      alt={m.caption ?? "Guest photo"}
+                      loading="lazy"
+                      className="w-full object-cover"
+                    />
+                  )
                 )}
-                {(m.caption || m.guest_name) && (
-                  <figcaption className="px-3 py-3 text-xs text-muted-foreground">
-                    {m.caption}
-                    {m.guest_name && (
-                      <span className="mt-1 block text-foreground">— {m.guest_name}</span>
-                    )}
-                  </figcaption>
-                )}
+                <figcaption className="px-3 py-3 text-xs text-muted-foreground">
+                  <span className="mr-2 rounded-full border border-gold/40 px-2 py-0.5 text-[0.65rem] text-foreground">
+                    {categoryLabel(m.category)}
+                  </span>
+                  {m.caption}
+                  {m.guest_name && (
+                    <span className="mt-1 block text-foreground">— {m.guest_name}</span>
+                  )}
+                </figcaption>
               </figure>
             ))}
           </div>
