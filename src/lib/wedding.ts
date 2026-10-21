@@ -126,7 +126,22 @@ export const memoryCategories = [
   { id: "general", label: "General" },
 ] as const;
 
-export const MAX_UPLOAD_MB = 200;
+export const MAX_UPLOAD_MB = 1024;
+
+export const bridalNotes = [
+  {
+    title: "Makeup & Gele",
+    note: "A makeup artist has agreed to handle both for ₦15,000 per person. Interested? Reach out early so we can confirm numbers ahead of time. 💄",
+  },
+  {
+    title: "Henna Day",
+    note: "The bride has already taken care of the henna — no payment required, just show up glowing. 🌿",
+  },
+  {
+    title: "Soirée Games",
+    note: "What games and fun activities should we have at the Bridal Soirée? Bring your ideas — the more laughter, the better. 🥳",
+  },
+] as const;
 
 export const quiz = {
   title: "How well do you know Fatima?",
