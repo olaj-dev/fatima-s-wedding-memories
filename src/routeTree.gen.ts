@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
+import { Route as BridalShowerRouteImport } from './routes/bridal-shower'
 import { Route as MemoriesRouteImport } from './routes/memories'
 import { Route as NoteRouteImport } from './routes/note'
 import { Route as QuizRouteImport } from './routes/quiz'
@@ -17,6 +18,11 @@ import { Route as QuizRouteImport } from './routes/quiz'
 const IndexRoute = IndexRouteImport.update({
   id: '/',
   path: '/',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const BridalShowerRoute = BridalShowerRouteImport.update({
+  id: '/bridal-shower',
+  path: '/bridal-shower',
   getParentRoute: () => rootRouteImport,
 } as any)
 const MemoriesRoute = MemoriesRouteImport.update({
@@ -37,12 +43,14 @@ const QuizRoute = QuizRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
+  '/bridal-shower': typeof BridalShowerRoute
   '/memories': typeof MemoriesRoute
   '/note': typeof NoteRoute
   '/quiz': typeof QuizRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
+  '/bridal-shower': typeof BridalShowerRoute
   '/memories': typeof MemoriesRoute
   '/note': typeof NoteRoute
   '/quiz': typeof QuizRoute
@@ -50,20 +58,22 @@ export interface FileRoutesByTo {
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
+  '/bridal-shower': typeof BridalShowerRoute
   '/memories': typeof MemoriesRoute
   '/note': typeof NoteRoute
   '/quiz': typeof QuizRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/memories' | '/note' | '/quiz'
+  fullPaths: '/' | '/bridal-shower' | '/memories' | '/note' | '/quiz'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/memories' | '/note' | '/quiz'
-  id: '__root__' | '/' | '/memories' | '/note' | '/quiz'
+  to: '/' | '/bridal-shower' | '/memories' | '/note' | '/quiz'
+  id: '__root__' | '/' | '/bridal-shower' | '/memories' | '/note' | '/quiz'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
+  BridalShowerRoute: typeof BridalShowerRoute
   MemoriesRoute: typeof MemoriesRoute
   NoteRoute: typeof NoteRoute
   QuizRoute: typeof QuizRoute
@@ -76,6 +86,13 @@ declare module '@tanstack/react-router' {
       path: '/'
       fullPath: '/'
       preLoaderRoute: typeof IndexRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/bridal-shower': {
+      id: '/bridal-shower'
+      path: '/bridal-shower'
+      fullPath: '/bridal-shower'
+      preLoaderRoute: typeof BridalShowerRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/memories': {
@@ -104,6 +121,7 @@ declare module '@tanstack/react-router' {
 
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
+  BridalShowerRoute: BridalShowerRoute,
   MemoriesRoute: MemoriesRoute,
   NoteRoute: NoteRoute,
   QuizRoute: QuizRoute,

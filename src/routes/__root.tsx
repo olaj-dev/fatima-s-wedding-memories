@@ -99,7 +99,7 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
         rel: "stylesheet",
         href: "https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@300;400;500;600&family=Jost:wght@300;400;500&family=Amiri:wght@400;700&family=Great+Vibes&display=swap",
       },
-      { rel: "icon", href: "/favicon.ico", type: "image/x-icon" },
+      { rel: "icon", type: "image/png", href: "/favicon.png" },
     ],
   }),
   shellComponent: RootShell,
@@ -126,6 +126,7 @@ function SiteHeader() {
   const [menuOpen, setMenuOpen] = useState(false);
   const links = [
     { to: "/", label: "Home" },
+    { to: "/bridal-shower", label: "Bridal Shower" },
     { to: "/note", label: "A Note for Fatima" },
     { to: "/memories", label: "Share Photos" },
     { to: "/quiz", label: "How Well Do You Know Her?" },
