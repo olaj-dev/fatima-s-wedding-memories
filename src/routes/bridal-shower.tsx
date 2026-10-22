@@ -118,19 +118,6 @@ function BridalShowerPage() {
           </Link>
         </div>
 
-        {/* Notes for the girls */}
-        <div className="mt-8 grid gap-4 sm:grid-cols-3">
-          {bridalNotes.map((n, i) => (
-            <div
-              key={n.title}
-              className="animate-rise rounded-sm border border-gold/25 bg-card p-5"
-              style={{ animationDelay: `${0.15 + i * 0.08}s` }}
-            >
-              <p className="font-display text-xl">{n.title}</p>
-              <p className="mt-2 text-sm leading-relaxed text-muted-foreground">{n.note}</p>
-            </div>
-          ))}
-        </div>
 
         <p className="mt-10 text-center text-sm text-muted-foreground">
           Taking photos and videos during the week?{" "}
