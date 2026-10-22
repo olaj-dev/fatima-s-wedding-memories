@@ -38,6 +38,7 @@ function buildShareText() {
 
 function BridalShowerPage() {
   const [copied, setCopied] = useState(false);
+  const [showText, setShowText] = useState(false);
 
   async function shareCard() {
     const text = `${buildShareText()}\n\nFull details: ${window.location.origin}/bridal-shower`;
@@ -54,7 +55,8 @@ function BridalShowerPage() {
       setCopied(true);
       setTimeout(() => setCopied(false), 2500);
     } catch {
-      // clipboard unavailable (e.g. HTTP preview) — ignore
+      // clipboard unavailable (e.g. HTTP preview) — show it for manual copy
+      setShowText(true);
     }
   }
 
