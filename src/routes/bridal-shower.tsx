@@ -1,6 +1,6 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { useState } from "react";
-import { bridalNotes, bridalWeek, quiz, wedding } from "@/lib/wedding";
+import { bridalWeek, quiz, wedding } from "@/lib/wedding";
 import { Check, Link2, Sparkles } from "lucide-react";
 
 export const Route = createFileRoute("/bridal-shower")({
