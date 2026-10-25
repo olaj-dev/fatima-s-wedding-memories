@@ -2,7 +2,9 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { MAX_UPLOAD_MB, memoryCategories, wedding } from "@/lib/wedding";
-import { Camera, Clapperboard, Images, Loader2, UploadCloud } from "lucide-react";
+import { Clapperboard, Images, Loader2, Trash2, UploadCloud } from "lucide-react";
+import { useServerFn } from "@tanstack/react-start";
+import { deleteMemory, verifyAdminPin } from "@/lib/memories.functions";
 
 export const Route = createFileRoute("/memories")({
   head: () => ({
@@ -52,6 +54,46 @@ function MemoriesPage() {
   const [category, setCategory] = useState<string>("general");
   const [filter, setFilter] = useState<Filter>("all");
   const fileRef = useRef<HTMLInputElement>(null);
+  const [adminPin, setAdminPin] = useState<string | null>(null);
+  const [pinOpen, setPinOpen] = useState(false);
+  const [pinInput, setPinInput] = useState("");
+  const [pinError, setPinError] = useState<string | null>(null);
+  const [deletingId, setDeletingId] = useState<string | null>(null);
+  const taps = useRef<number[]>([]);
+  const verifyPinFn = useServerFn(verifyAdminPin);
+  const deleteFn = useServerFn(deleteMemory);
+
+  function onTitleTap() {
+    const now = Date.now();
+    taps.current = [...taps.current.filter((t) => now - t < 1200), now];
+    if (taps.current.length >= 3) {
+      taps.current = [];
+      if (!adminPin) {
+        setPinInput("");
+        setPinError(null);
+        setPinOpen(true);
+      }
+    }
+  }
+
+  async function submitPin() {
+    const res = await verifyPinFn({ data: { pin: pinInput } });
+    if (res.ok) {
+      setAdminPin(pinInput);
+      setPinOpen(false);
+    } else {
+      setPinError("Incorrect PIN");
+    }
+  }
+
+  async function removeMemory(id: string) {
+    if (!adminPin || !window.confirm("Delete this from the wall? This can't be undone.")) return;
+    setDeletingId(id);
+    const res = await deleteFn({ data: { pin: adminPin, id } });
+    setDeletingId(null);
+    if (res.ok) setMemories((ms) => ms.filter((m) => m.id !== id));
+    else window.alert("Sorry, that could not be deleted.");
+  }
 
   async function load() {
     const { data, error } = await supabase
@@ -139,7 +181,55 @@ function MemoriesPage() {
     <main>
       <section className="bg-emerald-gradient px-5 py-20 text-center">
         <p className="eyebrow text-gold-soft">Bridal week to Nikkah day</p>
-        <h1 className="mt-3 text-5xl text-primary-foreground">Memory wall</h1>
+        <h1
+          onClick={onTitleTap}
+          className="mt-3 cursor-default select-none text-5xl text-primary-foreground"
+        >
+          Memory wall
+        </h1>
+        {adminPin && (
+          <p className="mt-4 text-xs text-gold-soft">
+            Admin mode active •{" "}
+            <button type="button" className="underline" onClick={() => setAdminPin(null)}>
+              Exit
+            </button>
+          </p>
+        )}
+        {pinOpen && (
+          <div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/60 px-5"
+            onClick={() => setPinOpen(false)}
+          >
+            <form
+              onClick={(e) => e.stopPropagation()}
+              onSubmit={(e) => {
+                e.preventDefault();
+                void submitPin();
+              }}
+              className="w-full max-w-xs rounded-sm border border-gold/40 bg-card p-6 text-center shadow-elegant"
+            >
+              <p className="eyebrow">Admin access</p>
+              <input
+                autoFocus
+                type="password"
+                inputMode="numeric"
+                maxLength={10}
+                value={pinInput}
+                onChange={(e) => setPinInput(e.target.value)}
+                aria-label="Admin PIN"
+                placeholder="Enter PIN"
+                className="mt-4 w-full rounded-sm border border-input bg-background px-3 py-2 text-center text-lg tracking-[0.5em] text-foreground outline-none focus:border-gold"
+              />
+              {pinError && <p className="mt-2 text-xs text-destructive">{pinError}</p>}
+              <button
+                type="submit"
+                className="mt-4 w-full rounded-sm bg-primary px-4 py-2 text-sm text-primary-foreground"
+              >
+                Unlock
+              </button>
+            </form>
+          </div>
+        )}
         <span className="gold-rule mx-auto mt-6 max-w-xs" />
         <p className="mx-auto mt-6 max-w-xl text-primary-foreground/85">
           Took a photo or video during the bridal week or on the Nikkah day? Add it here so{" "}
@@ -277,6 +367,22 @@ function MemoriesPage() {
                       className="w-full object-cover"
                     />
                   )
+                )}
+                {adminPin && (
+                  <button
+                    type="button"
+                    aria-label="Delete this memory"
+                    onClick={() => void removeMemory(m.id)}
+                    disabled={deletingId === m.id}
+                    className="flex w-full items-center justify-center gap-2 bg-destructive px-3 py-2 text-xs text-destructive-foreground disabled:opacity-60"
+                  >
+                    {deletingId === m.id ? (
+                      <Loader2 className="h-3 w-3 animate-spin" />
+                    ) : (
+                      <Trash2 className="h-3 w-3" />
+                    )}
+                    Delete
+                  </button>
                 )}
                 <figcaption className="px-3 py-3 text-xs text-muted-foreground">
                   <span className="mr-2 rounded-full border border-gold/40 px-2 py-0.5 text-[0.65rem] text-foreground">
