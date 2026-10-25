@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { useEffect, useRef, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
 import { MAX_UPLOAD_MB, memoryCategories, wedding } from "@/lib/wedding";
-import { Clapperboard, Images, Loader2, Trash2, UploadCloud } from "lucide-react";
+import { Clapperboard, Images, KeyRound, Loader2, Trash2, UploadCloud } from "lucide-react";
 import { useServerFn } from "@tanstack/react-start";
 import { deleteMemory, verifyAdminPin } from "@/lib/memories.functions";
 
@@ -59,6 +59,8 @@ function MemoriesPage() {
   const [pinInput, setPinInput] = useState("");
   const [pinError, setPinError] = useState<string | null>(null);
   const [deletingId, setDeletingId] = useState<string | null>(null);
+  const [confirmId, setConfirmId] = useState<string | null>(null);
+  const [deleteError, setDeleteError] = useState<string | null>(null);
   const taps = useRef<number[]>([]);
   const verifyPinFn = useServerFn(verifyAdminPin);
   const deleteFn = useServerFn(deleteMemory);
@@ -86,13 +88,22 @@ function MemoriesPage() {
     }
   }
 
-  async function removeMemory(id: string) {
-    if (!adminPin || !window.confirm("Delete this from the wall? This can't be undone.")) return;
+  function removeMemory(id: string) {
+    if (!adminPin) return;
+    setDeleteError(null);
+    setConfirmId(id);
+  }
+
+  async function confirmDelete() {
+    const id = confirmId;
+    if (!adminPin || !id) return;
     setDeletingId(id);
     const res = await deleteFn({ data: { pin: adminPin, id } });
     setDeletingId(null);
-    if (res.ok) setMemories((ms) => ms.filter((m) => m.id !== id));
-    else window.alert("Sorry, that could not be deleted.");
+    if (res.ok) {
+      setMemories((ms) => ms.filter((m) => m.id !== id));
+      setConfirmId(null);
+    } else setDeleteError("Sorry, that could not be deleted. Please try again.");
   }
 
   async function load() {
@@ -183,10 +194,26 @@ function MemoriesPage() {
         <p className="eyebrow text-gold-soft">Bridal week to Nikkah day</p>
         <h1
           onClick={onTitleTap}
+          style={{ touchAction: "manipulation", WebkitTapHighlightColor: "transparent" }}
           className="mt-3 cursor-default select-none text-5xl text-primary-foreground"
         >
           Memory wall
         </h1>
+        {!adminPin && (
+          <button
+            type="button"
+            aria-label="Admin mode"
+            onClick={() => {
+              setPinInput("");
+              setPinError(null);
+              setPinOpen(true);
+            }}
+            className="mt-2 inline-flex p-2 text-primary-foreground/25 hover:text-primary-foreground/60"
+            style={{ touchAction: "manipulation" }}
+          >
+            <KeyRound className="h-3.5 w-3.5" />
+          </button>
+        )}
         {adminPin && (
           <p className="mt-4 text-xs text-gold-soft">
             Admin mode active •{" "}
@@ -194,6 +221,45 @@ function MemoriesPage() {
               Exit
             </button>
           </p>
+        )}
+        {confirmId && (
+          <div
+            role="dialog"
+            aria-modal="true"
+            className="fixed inset-0 z-50 flex items-center justify-center bg-foreground/60 px-5"
+            onClick={() => !deletingId && setConfirmId(null)}
+          >
+            <div
+              className="w-full max-w-sm rounded-2xl bg-card p-6 text-center text-card-foreground shadow-xl"
+              onClick={(e) => e.stopPropagation()}
+            >
+              <Trash2 className="mx-auto h-8 w-8 text-destructive" />
+              <h2 className="mt-3 text-2xl">Delete this memory?</h2>
+              <p className="mt-2 text-sm text-muted-foreground">
+                It will be removed from the wall for everyone. This can't be undone.
+              </p>
+              {deleteError && <p className="mt-3 text-sm text-destructive">{deleteError}</p>}
+              <div className="mt-6 flex gap-3">
+                <button
+                  type="button"
+                  disabled={!!deletingId}
+                  onClick={() => setConfirmId(null)}
+                  className="flex-1 rounded-full border border-border px-4 py-2 text-sm"
+                >
+                  Cancel
+                </button>
+                <button
+                  type="button"
+                  disabled={!!deletingId}
+                  onClick={confirmDelete}
+                  className="flex flex-1 items-center justify-center gap-2 rounded-full bg-destructive px-4 py-2 text-sm text-destructive-foreground"
+                >
+                  {deletingId ? <Loader2 className="h-4 w-4 animate-spin" /> : null}
+                  Yes, delete
+                </button>
+              </div>
+            </div>
+          </div>
         )}
         {pinOpen && (
           <div
